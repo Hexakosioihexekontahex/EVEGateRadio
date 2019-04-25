@@ -1,9 +1,13 @@
-package com.hex.evegate;
+package com.hex.evegate.ui;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -11,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hex.evegate.R;
 import com.hex.evegate.radio.PlaybackStatus;
 import com.hex.evegate.radio.RadioManager;
 import com.hex.evegate.util.Shoutcast;
@@ -26,6 +31,8 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 
 public class MainActivity extends AppCompatActivity {
+
+    boolean back = true;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -45,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     RadioManager radioManager;
 
     String streamURL;
+    private long lastBackPressTime;
+    private long DOUBLE_CLICK_DELAY = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +104,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
-        finish();
+        long now = System.currentTimeMillis();
+        if (now - lastBackPressTime < DOUBLE_CLICK_DELAY) {
+            finish();
+        } else {
+            lastBackPressTime = now;
+            Toast toast = Toast.makeText(MainActivity.this, "Нажмите \"Назад\" еще раз для выхода их приложения.\nДля продолжения прослушивания в фоновом режиме нажмите \"Свернуть\"", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
     }
 
     @Subscribe

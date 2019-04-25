@@ -13,7 +13,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.hex.evegate.MainActivity;
+import com.hex.evegate.ui.MainActivity;
 import com.hex.evegate.R;
 
 public class MediaNotificationManager {
@@ -43,7 +43,7 @@ public class MediaNotificationManager {
 
     public void startNotify(String playbackStatus) {
 
-        Bitmap largeIcon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
+        Bitmap largeIcon = BitmapFactory.decodeResource(resources, R.drawable.evegate_large);
 
         int icon = R.drawable.ic_pause_white;
         Intent playbackAction = new Intent(service, RadioService.class);
@@ -83,7 +83,7 @@ public class MediaNotificationManager {
                 .setLargeIcon(largeIcon)
                 .setContentIntent(pendingIntent)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setSmallIcon(android.R.drawable.stat_sys_headset)
+                .setSmallIcon(R.mipmap.ic_evegate_foreground)
                 .addAction(icon, "pause", action)
                 .addAction(R.drawable.ic_stop_white, "stop", stopAction)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
