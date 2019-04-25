@@ -1,4 +1,4 @@
-package com.mcakir.radio.player;
+package com.hex.evegate.radio;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -33,17 +33,16 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.mcakir.radio.R;
+import com.hex.evegate.R;
 
 import org.greenrobot.eventbus.EventBus;
 
 public class RadioService extends Service implements Player.EventListener, AudioManager.OnAudioFocusChangeListener {
 
-    public static final String ACTION_PLAY = "com.mcakir.radio.player.ACTION_PLAY";
-    public static final String ACTION_PAUSE = "com.mcakir.radio.player.ACTION_PAUSE";
-    public static final String ACTION_STOP = "com.mcakir.radio.player.ACTION_STOP";
+    public static final String ACTION_PLAY = "com.hex.evegate.radio.ACTION_PLAY";
+    public static final String ACTION_PAUSE = "com.hex.evegate.radio.ACTION_PAUSE";
+    public static final String ACTION_STOP = "com.hex.evegate.radio.ACTION_STOP";
 
     private final IBinder iBinder = new LocalBinder();
 

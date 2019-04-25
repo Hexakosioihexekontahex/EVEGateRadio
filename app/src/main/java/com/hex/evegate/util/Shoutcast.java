@@ -1,4 +1,4 @@
-package com.mcakir.radio.util;
+package com.hex.evegate.util;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,14 +1,13 @@
-package com.mcakir.radio.util;
+package com.hex.evegate.util;
 
 import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mcakir.radio.R;
+import com.hex.evegate.R;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ShoutcastHelper {

@@ -1,4 +1,4 @@
-package com.mcakir.radio.player;
+package com.hex.evegate.radio;
 
 public class PlaybackStatus {
 

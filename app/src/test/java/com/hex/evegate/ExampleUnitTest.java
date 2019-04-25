@@ -1,4 +1,4 @@
-package com.mcakir.radio;
+package com.hex.evegate;
 
 import org.junit.Test;
 

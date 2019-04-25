@@ -1,4 +1,4 @@
-package com.mcakir.radio;
+package com.hex.evegate;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.mcakir.radio", appContext.getPackageName());
+        assertEquals("com.hex.evegate", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.mcakir.radio.player;
+package com.hex.evegate.radio;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -13,8 +13,8 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.mcakir.radio.MainActivity;
-import com.mcakir.radio.R;
+import com.hex.evegate.MainActivity;
+import com.hex.evegate.R;
 
 public class MediaNotificationManager {
 

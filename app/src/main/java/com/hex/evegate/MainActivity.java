@@ -1,4 +1,4 @@
-package com.mcakir.radio;
+package com.hex.evegate;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +11,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mcakir.radio.player.PlaybackStatus;
-import com.mcakir.radio.player.RadioManager;
-import com.mcakir.radio.util.Shoutcast;
-import com.mcakir.radio.util.ShoutcastHelper;
-import com.mcakir.radio.util.ShoutcastListAdapter;
+import com.hex.evegate.radio.PlaybackStatus;
+import com.hex.evegate.radio.RadioManager;
+import com.hex.evegate.util.Shoutcast;
+import com.hex.evegate.util.ShoutcastHelper;
+import com.hex.evegate.util.ShoutcastListAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

@@ -1,4 +1,4 @@
-package com.mcakir.radio.util;
+package com.hex.evegate.util;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.mcakir.radio.R;
+import com.hex.evegate.R;
 
 import java.util.ArrayList;
 import java.util.List;
