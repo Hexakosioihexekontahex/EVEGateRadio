@@ -1,7 +1,9 @@
 package com.hex.evegate.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +50,24 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.name)
     TextView textView;
 
+    @BindView(R.id.llFirst)
+    LinearLayout llFirst;
+
+    @BindView(R.id.tvFirst)
+    TextView tvFirst;
+
+    @BindView(R.id.ivFirst)
+    ImageView ivFirst;
+
+    @BindView(R.id.llSecond)
+    LinearLayout llSecond;
+
+    @BindView(R.id.tvSecond)
+    TextView tvSecond;
+
+    @BindView(R.id.ivSecond)
+    ImageView ivSecond;
+
     @BindView(R.id.sub_player)
     View subPlayer;
 
@@ -69,7 +91,29 @@ public class MainActivity extends AppCompatActivity {
         radioManager = RadioManager.with(this);
 
         listView.setAdapter(new ShoutcastListAdapter(this, ShoutcastHelper.retrieveShoutcasts(this)));
+
+        llFirst.setOnClickListener(firstClickListener);
+        tvFirst.setOnClickListener(firstClickListener);
+        ivFirst.setOnClickListener(firstClickListener);
+
+        llSecond.setOnClickListener(secondClickListener);
+        tvSecond.setOnClickListener(secondClickListener);
+        ivSecond.setOnClickListener(secondClickListener);
     }
+
+    View.OnClickListener firstClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/evegateradio")));
+        }
+    };
+
+    View.OnClickListener secondClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/EVE_ONLINE_RUS")));
+        }
+    };
 
     @Override
     public void onStart() {

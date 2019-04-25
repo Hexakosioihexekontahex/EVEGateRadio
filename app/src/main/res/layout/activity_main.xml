@@ -30,4 +30,75 @@
 
     <include layout="@layout/content_main" />
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:layout_gravity="center|end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/llFirst"
+            android:orientation="horizontal"
+            android:layout_gravity="center|end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/tvFirst"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_margin="5dp"
+                android:background="@color/telegramTrans"
+                android:text="@string/evegateradio_chat"
+                android:clickable="true"
+                android:focusable="true"/>
+            <ImageView
+                android:id="@+id/ivFirst"
+                android:src="@drawable/telegram_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="5dp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llSecond"
+            android:orientation="horizontal"
+            android:layout_gravity="center|end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            android:focusable="true">
+            <TextView
+                android:id="@+id/tvSecond"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:layout_margin="5dp"
+                android:textStyle="bold"
+                android:text="@string/eve_online_rus"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@color/telegramTrans"/>
+            <ImageView
+                android:id="@+id/ivSecond"
+                android:src="@drawable/telegram_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="5dp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+
+    </LinearLayout>
+
 </android.support.design.widget.CoordinatorLayout>
