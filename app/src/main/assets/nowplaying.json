@@ -1,0 +1,162 @@
+{
+    "station": {
+    "id": 1,
+    "name": "EVEGateRadio",
+    "shortcode": "eve_gate_radio",
+    "description": "",
+    "frontend": "icecast",
+    "backend": "liquidsoap",
+    "listen_url": "https://azure.evegateradio.ru/radio/8000/egrhigh.mp3?1556293531",
+    "is_public": true,
+    "mounts": [
+    {
+        "is_default": true,
+        "name": "EVEGateRadio High Quality",
+        "url": "https://azure.evegateradio.ru/radio/8000/egrhigh.mp3?1556293531",
+        "bitrate": 320,
+        "format": "mp3"
+    },
+    {
+        "is_default": false,
+        "name": "EVEGateRadio Low Quality",
+        "url": "https://azure.evegateradio.ru/radio/8000/egrlow.mp3?1556293531",
+        "bitrate": 128,
+        "format": "mp3"
+    }
+    ],
+    "remotes": []
+},
+    "listeners": {
+    "current": 8,
+    "unique": 8,
+    "total": 8
+},
+    "live": {
+    "is_live": false,
+    "streamer_name": ""
+},
+    "now_playing": {
+    "elapsed": 60,
+    "remaining": 340,
+    "sh_id": 12420,
+    "played_at": 1556293474,
+    "duration": 400,
+    "playlist": "Full Rotation",
+    "is_request": false,
+    "song": {
+    "id": "739e926e69eefdc5aa6537d7e10193cc",
+    "text": "Carpenter Brut - Invasion A.D.",
+    "artist": "Carpenter Brut",
+    "title": "Invasion A.D.",
+    "album": "Trilogy",
+    "lyrics": "",
+    "art": "https://azure.evegateradio.ru/api/station/1/art/5c501dd9a28d513262affea0.jpg",
+    "custom_fields": []
+}
+},
+    "playing_next": {
+    "sh_id": 12421,
+    "played_at": 0,
+    "duration": 251,
+    "playlist": "Full Rotation",
+    "is_request": false,
+    "song": {
+    "id": "f180337fab4fc08ca20647d601e5ab9e",
+    "text": "Chase & Status - No Problem",
+    "artist": "Chase & Status",
+    "title": "No Problem",
+    "album": "No More Idols [Standard Album]",
+    "lyrics": "",
+    "art": "https://azure.evegateradio.ru/api/station/1/art/59062269fe1fd04e8f0ea13e.jpg",
+    "custom_fields": []
+}
+},
+    "song_history": [
+    {
+        "sh_id": 12419,
+        "played_at": 1556292909,
+        "duration": 566,
+        "playlist": "Full Rotation",
+        "is_request": false,
+        "song": {
+        "id": "5b8df0c7633d530a4e8ab74d683e233b",
+        "text": "EvE - New Eden Distruction Mix",
+        "artist": "EvE",
+        "title": "New Eden Distruction Mix",
+        "album": "",
+        "lyrics": "",
+        "art": "https://azure.evegateradio.ru/api/station/1/art/edd8bee34a92d42a1e6cd2d3.jpg",
+        "custom_fields": []
+    }
+    },
+    {
+        "sh_id": 12418,
+        "played_at": 1556292755,
+        "duration": 153,
+        "playlist": "Full Rotation",
+        "is_request": false,
+        "song": {
+        "id": "4681e995ec8563f9710d9e21cb63cd1c",
+        "text": "Combichrist - No Redemption",
+        "artist": "Combichrist",
+        "title": "No Redemption",
+        "album": "No Redemption",
+        "lyrics": "",
+        "art": "https://azure.evegateradio.ru/api/station/1/art/5515501f2cb39de041563ab3.jpg",
+        "custom_fields": []
+    }
+    },
+    {
+        "sh_id": 12417,
+        "played_at": 1556292607,
+        "duration": 149,
+        "playlist": "Full Rotation",
+        "is_request": false,
+        "song": {
+        "id": "86a3b0f8bb717299d5f9f9e5ec747c87",
+        "text": "Jfb - Ritz",
+        "artist": "Jfb",
+        "title": "Ritz",
+        "album": "",
+        "lyrics": "",
+        "art": "https://azure.evegateradio.ru/api/station/1/art/876af5ed839a7f4b4f68f023.jpg",
+        "custom_fields": []
+    }
+    },
+    {
+        "sh_id": 12416,
+        "played_at": 1556292160,
+        "duration": 446,
+        "playlist": "Full Rotation",
+        "is_request": false,
+        "song": {
+        "id": "faf89b29a39d2a438a842ba811bc46e6",
+        "text": "Black Sun Empire - Arrakis",
+        "artist": "Black Sun Empire",
+        "title": "Arrakis",
+        "album": "",
+        "lyrics": "",
+        "art": "https://azure.evegateradio.ru/api/station/1/art/e863779e6b4df537031d322e.jpg",
+        "custom_fields": []
+    }
+    },
+    {
+        "sh_id": 12415,
+        "played_at": 1556291934,
+        "duration": 226,
+        "playlist": "Full Rotation",
+        "is_request": false,
+        "song": {
+        "id": "bbb13f287c904a1d360b8cad9307b7d3",
+        "text": "Nickelback - Next Go Round",
+        "artist": "Nickelback",
+        "title": "Next Go Round",
+        "album": "Dark Horse",
+        "lyrics": "",
+        "art": "https://azure.evegateradio.ru/api/station/1/art/a38ba036e136c4f749f44d78.jpg",
+        "custom_fields": []
+    }
+    }
+    ],
+    "cache": "station"
+}

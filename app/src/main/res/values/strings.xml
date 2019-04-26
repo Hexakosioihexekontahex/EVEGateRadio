@@ -6,4 +6,6 @@
     <string name="live_broadcast">On Air</string>
     <string name="evegateradio_chat">EVEGateRadio чат</string>
     <string name="eve_online_rus">Флудилка по EVE Online</string>
+    <string name="defaultt">Default</string>
+    <string name="now_playing_">Сейчас играет:</string>
 </resources>

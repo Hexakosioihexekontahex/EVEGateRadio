@@ -19,7 +19,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.hex.evegate.R;
+import com.hex.evegate.api.RetrofitClient;
+import com.hex.evegate.api.StationApi;
+import com.hex.evegate.api.dto.NowPlayingDto;
 import com.hex.evegate.radio.PlaybackStatus;
 import com.hex.evegate.radio.RadioManager;
 import com.hex.evegate.util.Shoutcast;
@@ -33,19 +37,35 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
     boolean back = true;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     @BindView(R.id.playTrigger)
     ImageButton trigger;
 
     @BindView(R.id.listview)
     ListView listView;
+
+    @BindView(R.id.tvCount)
+    TextView tvCount;
+
+    @BindView(R.id.tvSongName)
+    TextView tvSongName;
+
+    @BindView(R.id.ivImage)
+    ImageView ivImage;
+
+    @BindView(R.id.ivBackground)
+    ImageView ivBackground;
 
     @BindView(R.id.name)
     TextView textView;
@@ -75,7 +95,12 @@ public class MainActivity extends AppCompatActivity {
 
     String streamURL;
     private long lastBackPressTime;
-    private long DOUBLE_CLICK_DELAY = 1000;
+    private final long DOUBLE_CLICK_DELAY = 1000;
+
+    private CompositeDisposable compositeDisposable;
+    private Retrofit retrofit;
+    private StationApi stationApi;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +110,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
 
         radioManager = RadioManager.with(this);
 
@@ -99,21 +122,51 @@ public class MainActivity extends AppCompatActivity {
         llSecond.setOnClickListener(secondClickListener);
         tvSecond.setOnClickListener(secondClickListener);
         ivSecond.setOnClickListener(secondClickListener);
+
+        configNet();
+
+        getNowPlayingDto();
     }
 
-    View.OnClickListener firstClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/evegateradio")));
-        }
-    };
+    private void getNowPlayingDto() {
+        compositeDisposable.add(stationApi.nowPlaying()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::handleNowPlayingResponse, this::handleNowPlayingError));
+    }
 
-    View.OnClickListener secondClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/EVE_ONLINE_RUS")));
+    private void handleNowPlayingResponse(Response<NowPlayingDto> result) {
+        if (result.isSuccessful()) {
+            if (result.body() != null) {
+                Toast.makeText(this, result.body().getNow_playing().getSong().getText(), Toast.LENGTH_SHORT).show();
+
+                tvCount.setText(result.body().getListeners().getTotal());
+                tvSongName.setText(result.body().getNow_playing().getSong().getText());
+                try {
+                    Glide.with(this).load(result.body().getNow_playing().getSong().getArt())
+                            .into(ivBackground);
+                } catch (Exception e) {
+                    /*ignored*/
+                }
+            }
+        } else {
+            Toast.makeText(this, "Ашипко!", Toast.LENGTH_SHORT).show();
         }
-    };
+    }
+
+    private void handleNowPlayingError(Throwable error) {
+
+    }
+
+    private void configNet() {
+        compositeDisposable = new CompositeDisposable();
+        retrofit = RetrofitClient.getInstance();
+        stationApi = retrofit.create(StationApi.class);
+    }
+
+    View.OnClickListener firstClickListener = v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/evegateradio")));
+
+    View.OnClickListener secondClickListener = v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/EVE_ONLINE_RUS")));
 
     @Override
     public void onStart() {
