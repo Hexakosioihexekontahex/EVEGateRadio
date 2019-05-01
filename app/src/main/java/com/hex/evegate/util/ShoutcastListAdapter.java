@@ -1,6 +1,6 @@
 package com.hex.evegate.util;
 
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +12,13 @@ import com.hex.evegate.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ShoutcastListAdapter extends BaseAdapter {
 
-    private Activity activity;
+    private AppCompatActivity activity;
 
     private List<Shoutcast> shoutcasts = new ArrayList<>();
 
-    public ShoutcastListAdapter(Activity activity, List<Shoutcast> shoutcasts){
+    public ShoutcastListAdapter(AppCompatActivity activity, List<Shoutcast> shoutcasts){
         this.activity = activity;
         this.shoutcasts = shoutcasts;
     }
@@ -75,14 +72,10 @@ public class ShoutcastListAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-
-        @BindView(R.id.text)
         TextView text;
 
-        public ViewHolder(View view) {
-
-            ButterKnife.bind(this, view);
-
+        public ViewHolder(View v) {
+            text = v.findViewById(R.id.tvText);
         }
     }
 }

@@ -10,11 +10,18 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 
-import com.hex.evegate.ui.MainActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.hex.evegate.R;
+import com.hex.evegate.api.StationApi;
+import com.hex.evegate.net.RetrofitClient;
+import com.hex.evegate.ui.MainActivity;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MediaNotificationManager {
 
@@ -37,6 +44,18 @@ public class MediaNotificationManager {
 
         strAppName = resources.getString(R.string.app_name);
         strLiveBroadcast = resources.getString(R.string.live_broadcast);
+
+        new CompositeDisposable().add(RetrofitClient.getInstance().create(StationApi.class).nowPlaying()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(nowPlayingDtoResponse -> {
+                    if (nowPlayingDtoResponse.isSuccessful() && nowPlayingDtoResponse.body() != null) {
+                        strAppName = nowPlayingDtoResponse.body().getNow_playing().getSong().getArtist();
+                        strLiveBroadcast = nowPlayingDtoResponse.body().getNow_playing().getSong().getTitle();
+                    }
+                }, throwable -> {
+
+                }));
 
         notificationManager = NotificationManagerCompat.from(service);
     }
@@ -87,12 +106,14 @@ public class MediaNotificationManager {
                 .addAction(icon, "pause", action)
                 .addAction(R.drawable.ic_stop_white, "stop", stopAction)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setWhen(System.currentTimeMillis())
-                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
-                        .setMediaSession(service.getMediaSession().getSessionToken())
-                        .setShowActionsInCompactView(0, 1)
-                        .setShowCancelButton(true)
-                        .setCancelButtonIntent(stopAction));
+                .setWhen(System.currentTimeMillis());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            builder.setStyle(new NotificationCompat.InboxStyle()
+//                    .setSession(service.getMediaSession().getSessionToken())
+//                    .setShowActionsInCompactView(0, 1))
+//                    .setShowCancelButton(true)
+//                    .setCancelButtonIntent(stopAction));
+        }
 
         service.startForeground(NOTIFICATION_ID, builder.build());
     }

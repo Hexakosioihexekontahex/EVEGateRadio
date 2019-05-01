@@ -1,17 +1,11 @@
 package com.hex.evegate.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,11 +13,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 import com.hex.evegate.R;
-import com.hex.evegate.api.RetrofitClient;
 import com.hex.evegate.api.StationApi;
 import com.hex.evegate.api.dto.NowPlayingDto;
+import com.hex.evegate.net.RetrofitClient;
 import com.hex.evegate.radio.PlaybackStatus;
 import com.hex.evegate.radio.RadioManager;
 import com.hex.evegate.util.Shoutcast;
@@ -33,87 +29,91 @@ import com.hex.evegate.util.ShoutcastListAdapter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
-    boolean back = true;
-
-    @BindView(R.id.playTrigger)
     ImageButton trigger;
-
-    @BindView(R.id.listview)
     ListView listView;
-
-    @BindView(R.id.tvCount)
     TextView tvCount;
-
-    @BindView(R.id.tvSongName)
     TextView tvSongName;
-
-    @BindView(R.id.ivImage)
     ImageView ivImage;
-
-    @BindView(R.id.ivBackground)
     ImageView ivBackground;
-
-    @BindView(R.id.name)
     TextView textView;
-
-    @BindView(R.id.llFirst)
     LinearLayout llFirst;
-
-    @BindView(R.id.tvFirst)
     TextView tvFirst;
-
-    @BindView(R.id.ivFirst)
     ImageView ivFirst;
-
-    @BindView(R.id.llSecond)
     LinearLayout llSecond;
-
-    @BindView(R.id.tvSecond)
     TextView tvSecond;
-
-    @BindView(R.id.ivSecond)
     ImageView ivSecond;
-
-    @BindView(R.id.sub_player)
     View subPlayer;
 
     RadioManager radioManager;
 
     String streamURL;
     private long lastBackPressTime;
-    private final long DOUBLE_CLICK_DELAY = 1000;
 
     private CompositeDisposable compositeDisposable;
     private Retrofit retrofit;
     private StationApi stationApi;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
+        initialize();
+        configNet();
+        getNowPlayingDto();
+    }
+
+    private void initialize() {
 
         setContentView(R.layout.activity_main);
 
-        ButterKnife.bind(this);
-
         radioManager = RadioManager.with(this);
 
+        trigger = findViewById(R.id.playTrigger);
+        listView = findViewById(R.id.listview);
         listView.setAdapter(new ShoutcastListAdapter(this, ShoutcastHelper.retrieveShoutcasts(this)));
+        tvCount = findViewById(R.id.tvCount);
+        tvSongName = findViewById(R.id.tvSongName);
+        ivImage = findViewById(R.id.ivImage);
+        ivBackground = findViewById(R.id.ivBackground);
+        textView = findViewById(R.id.name);
+        llFirst = findViewById(R.id.llFirst);
+        tvFirst = findViewById(R.id.tvFirst);
+        ivFirst = findViewById(R.id.ivFirst);
+        llSecond = findViewById(R.id.llSecond);
+        tvSecond = findViewById(R.id.tvSecond);
+        ivSecond = findViewById(R.id.ivSecond);
+        subPlayer = findViewById(R.id.sub_player);
+
+        trigger.setOnClickListener(v -> {
+            if(TextUtils.isEmpty(streamURL)) return;
+
+            radioManager.playOrPause(streamURL);
+        });
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Shoutcast shoutcast = (Shoutcast) parent.getItemAtPosition(position);
+            if(shoutcast == null){
+
+                return;
+
+            }
+
+            textView.setText(shoutcast.getName());
+
+            subPlayer.setVisibility(View.VISIBLE);
+
+            streamURL = shoutcast.getUrl();
+
+            radioManager.playOrPause(streamURL);
+        });
 
         llFirst.setOnClickListener(firstClickListener);
         tvFirst.setOnClickListener(firstClickListener);
@@ -122,10 +122,6 @@ public class MainActivity extends AppCompatActivity {
         llSecond.setOnClickListener(secondClickListener);
         tvSecond.setOnClickListener(secondClickListener);
         ivSecond.setOnClickListener(secondClickListener);
-
-        configNet();
-
-        getNowPlayingDto();
     }
 
     private void getNowPlayingDto() {
@@ -138,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
     private void handleNowPlayingResponse(Response<NowPlayingDto> result) {
         if (result.isSuccessful()) {
             if (result.body() != null) {
-                Toast.makeText(this, result.body().getNow_playing().getSong().getText(), Toast.LENGTH_SHORT).show();
-
                 tvCount.setText(result.body().getListeners().getTotal());
                 tvSongName.setText(result.body().getNow_playing().getSong().getText());
                 try {
@@ -155,18 +149,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleNowPlayingError(Throwable error) {
-
+        Toast.makeText(this, "Ашипко!", Toast.LENGTH_SHORT).show();
     }
 
     private void configNet() {
         compositeDisposable = new CompositeDisposable();
-        retrofit = RetrofitClient.getInstance();
+        retrofit = RetrofitClient.INSTANCE.getInstance();
         stationApi = retrofit.create(StationApi.class);
     }
 
-    View.OnClickListener firstClickListener = v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/evegateradio")));
+    View.OnClickListener firstClickListener = v -> startActivity(new Intent(Intent.ACTION_VIEW,
+            Uri.parse("https://t.me/evegateradio")));
 
-    View.OnClickListener secondClickListener = v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/EVE_ONLINE_RUS")));
+    View.OnClickListener secondClickListener = v -> startActivity(new Intent(Intent.ACTION_VIEW,
+            Uri.parse("https://t.me/EVE_ONLINE_RUS")));
 
     @Override
     public void onStart() {
@@ -188,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
 
         radioManager.unbind();
+        compositeDisposable.clear();
 
         super.onDestroy();
     }
@@ -202,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         long now = System.currentTimeMillis();
-        if (now - lastBackPressTime < DOUBLE_CLICK_DELAY) {
+        if (System.currentTimeMillis() - lastBackPressTime < 1000) {
             finish();
         } else {
             lastBackPressTime = now;
@@ -235,32 +232,5 @@ public class MainActivity extends AppCompatActivity {
                 ? R.drawable.ic_pause_black
                 : R.drawable.ic_play_arrow_black);
 
-    }
-
-    @OnClick(R.id.playTrigger)
-    public void onClicked(){
-
-        if(TextUtils.isEmpty(streamURL)) return;
-
-        radioManager.playOrPause(streamURL);
-    }
-
-    @OnItemClick(R.id.listview)
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-
-        Shoutcast shoutcast = (Shoutcast) parent.getItemAtPosition(position);
-        if(shoutcast == null){
-
-            return;
-
-        }
-
-        textView.setText(shoutcast.getName());
-
-        subPlayer.setVisibility(View.VISIBLE);
-
-        streamURL = shoutcast.getUrl();
-
-        radioManager.playOrPause(streamURL);
     }
 }

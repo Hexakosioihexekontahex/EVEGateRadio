@@ -1,20 +1,22 @@
 package com.hex.evegate.radio;
 
+import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.media.MediaMetadata;
+import android.media.session.MediaController;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
-import android.os.Handler;
+import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.MediaSessionCompat;
+import androidx.annotation.Nullable;
+
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -46,11 +48,10 @@ public class RadioService extends Service implements Player.EventListener, Audio
 
     private final IBinder iBinder = new LocalBinder();
 
-    private Handler handler;
     private final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
     private SimpleExoPlayer exoPlayer;
-    private MediaSessionCompat mediaSession;
-    private MediaControllerCompat.TransportControls transportControls;
+    private MediaSession mediaSession;
+    private MediaController.TransportControls transportControls;
 
     private boolean onGoingCall = false;
     private TelephonyManager telephonyManager;
@@ -105,31 +106,6 @@ public class RadioService extends Service implements Player.EventListener, Audio
         }
     };
 
-    private MediaSessionCompat.Callback mediasSessionCallback = new MediaSessionCompat.Callback() {
-        @Override
-        public void onPause() {
-            super.onPause();
-
-            pause();
-        }
-
-        @Override
-        public void onStop() {
-            super.onStop();
-
-            stop();
-
-            notificationManager.cancelNotify();
-        }
-
-        @Override
-        public void onPlay() {
-            super.onPlay();
-
-            resume();
-        }
-    };
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -153,21 +129,45 @@ public class RadioService extends Service implements Player.EventListener, Audio
         wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "mcScPAmpLock");
 
-        mediaSession = new MediaSessionCompat(this, getClass().getSimpleName());
-        transportControls = mediaSession.getController().getTransportControls();
-        mediaSession.setActive(true);
-        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-        mediaSession.setMetadata(new MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "...")
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, strAppName)
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, strLiveBroadcast)
-                .build());
-        mediaSession.setCallback(mediasSessionCallback);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mediaSession = new MediaSession(this, getClass().getSimpleName());
+            transportControls = mediaSession.getController().getTransportControls();
+            mediaSession.setActive(true);
+            mediaSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+            mediaSession.setMetadata(new MediaMetadata.Builder()
+                    .putString(MediaMetadata.METADATA_KEY_ARTIST, "...")
+                    .putString(MediaMetadata.METADATA_KEY_ALBUM, strAppName)
+                    .putString(MediaMetadata.METADATA_KEY_TITLE, strLiveBroadcast)
+                    .build());
+            mediaSession.setCallback(new MediaSession.Callback(){
+                @Override
+                public void onPause() {
+                    super.onPause();
+
+                    pause();
+                }
+
+                @Override
+                public void onStop() {
+                    super.onStop();
+
+                    stop();
+
+                    notificationManager.cancelNotify();
+                }
+
+                @Override
+                public void onPlay() {
+                    super.onPlay();
+
+                    resume();
+                }
+            });
+        }
 
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
-        handler = new Handler();
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         AdaptiveTrackSelection.Factory trackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         DefaultTrackSelector trackSelector = new DefaultTrackSelector(trackSelectionFactory);
@@ -197,15 +197,21 @@ public class RadioService extends Service implements Player.EventListener, Audio
 
         if(action.equalsIgnoreCase(ACTION_PLAY)){
 
-            transportControls.play();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                transportControls.play();
+            }
 
         } else if(action.equalsIgnoreCase(ACTION_PAUSE)) {
 
-            transportControls.pause();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                transportControls.pause();
+            }
 
         } else if(action.equalsIgnoreCase(ACTION_STOP)){
 
-            transportControls.stop();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                transportControls.stop();
+            }
 
         }
 
@@ -239,7 +245,9 @@ public class RadioService extends Service implements Player.EventListener, Audio
 
         notificationManager.cancelNotify();
 
-        mediaSession.release();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mediaSession.release();
+        }
 
         unregisterReceiver(becomingNoisyReceiver);
 
@@ -427,7 +435,7 @@ public class RadioService extends Service implements Player.EventListener, Audio
         return status;
     }
 
-    public MediaSessionCompat getMediaSession(){
+    public MediaSession getMediaSession(){
 
         return mediaSession;
     }
