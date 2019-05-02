@@ -51,7 +51,7 @@ public class ShoutcastListAdapter extends BaseAdapter {
 
         } else {
 
-            view = inflater.inflate(R.layout.list_item, parent, false);
+//            view = inflater.inflate(R.layout.list_item, parent, false);
 
             holder = new ViewHolder(view);
 
@@ -75,7 +75,7 @@ public class ShoutcastListAdapter extends BaseAdapter {
         TextView text;
 
         public ViewHolder(View v) {
-            text = v.findViewById(R.id.tvText);
+//            text = v.findViewById(R.id.tvText);
         }
     }
 }

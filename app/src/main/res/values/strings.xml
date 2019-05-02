@@ -8,4 +8,14 @@
     <string name="eve_online_rus">Флудилка по EVE Online</string>
     <string name="defaultt">Default</string>
     <string name="now_playing_">Сейчас играет:</string>
+    <string name="play_pause">play/pause</string>
+    <string name="hq">HQ</string>
+    <string name="on">on</string>
+    <string name="off">off</string>
+    <string name="evegateradio_low">http://azure.evegateradio.ru/radio/8000/egrlow.mp3</string>
+    <string name="evegateradio_high">http://azure.evegateradio.ru/radio/8000/egrhigh.mp3</string>
+    <string name="our_comms">Наши соцсети</string>
+    <string name="song_history">История песен</string>
+    <string name="album">album</string>
+    <string name="song_name">название трека</string>
 </resources>

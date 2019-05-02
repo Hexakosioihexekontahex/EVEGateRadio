@@ -1,8 +1,7 @@
 package com.hex.evegate
 
 import android.app.Application
-import android.widget.Toast
-import com.hex.evegate.net.*
+import android.content.Context
 
 class AppEx : Application() {
 
@@ -30,5 +29,18 @@ class AppEx : Application() {
 //                // Pass a string that uniquely identifies this instance.
 //                .register("myTrafficCop", this).startMeasuring()
     }
+
+    var shpHQ: Boolean
+        get() {
+            return getSharedPreferences(instance?.packageName, Context.MODE_PRIVATE)
+                    ?.getBoolean("HighQuality", true)!!
+        }
+        set(value) {
+            val sPref = getSharedPreferences(instance?.packageName, Context.MODE_PRIVATE)
+            val ed = sPref?.edit()
+            ed?.putBoolean("HighQuality", value)
+            ed?.apply()
+        }
+
 
 }

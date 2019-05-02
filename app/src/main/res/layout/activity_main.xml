@@ -1,9 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/gradient"
-    android:orientation="vertical">
+    android:id="@+id/dlDrawer"
+    tools:openDrawer="start">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient"
+        app:titleTextColor="#ffffff"
+        app:title="@string/app_name"
+        android:id="@+id/toolbar">
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:layout_gravity="top|end" >
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="25dp"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/start">
+
+                <CheckBox
+                    android:id="@+id/chbHQ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hq"
+                    android:layout_margin="10dp"
+                    android:textSize="24sp"
+                    android:checked="true"
+                    android:textColor="@color/white"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/ivBackground"
@@ -13,154 +59,106 @@
             android:layout_gravity="center"/>
 
         <LinearLayout
+            android:id="@+id/llInfo_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="top"
+            android:layout_marginTop="100dp"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/llInfo_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="top" >
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:orientation="horizontal" >
 
-                <LinearLayout
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_person_white_24dp"/>
+
+                <TextView
+                    android:id="@+id/tvCount"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:orientation="horizontal" >
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_person_white_24dp"/>
-
-                    <TextView
-                        android:id="@+id/tvCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:background="@color/telegramTrans"
-                        android:textSize="24sp"
-                        android:text="0"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/now_playing_"
-                        android:background="@color/telegramTrans"
-                        android:textSize="18sp"
-                        android:textColor="@color/white"/>
-
-                    <TextView
-                        android:id="@+id/tvSongName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/telegramTrans"
-                        android:text="@string/defaultt"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="128dp"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:id="@+id/ivImage"
-                        android:visibility="gone"
-                        android:layout_gravity="start"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="fitCenter"/>
-
-                </LinearLayout>
-
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:text="0"/>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:orientation="vertical" />
-        </LinearLayout>
-
-    <include layout="@layout/content_main" />
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_margin="10dp"
-        android:layout_gravity="center|end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/llFirst"
-            android:orientation="horizontal"
-            android:layout_gravity="center|end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:clickable="true"
-            android:focusable="true">
-            <TextView
-                android:id="@+id/tvFirst"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:layout_margin="5dp"
-                android:background="@color/telegramTrans"
-                android:text="@string/evegateradio_chat"
-                android:clickable="true"
-                android:focusable="true"/>
-            <ImageView
-                android:id="@+id/ivFirst"
-                android:src="@drawable/telegram_icon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="5dp"
-                android:clickable="true"
-                android:focusable="true" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/now_playing_"
+                    android:background="@color/telegramTrans"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"/>
+
+                <TextView
+                    android:id="@+id/tvSongName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/telegramTrans"
+                    android:text="@string/defaultt"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="128dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/ivImage"
+                    android:visibility="gone"
+                    android:layout_gravity="start"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"/>
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/llSecond"
-            android:orientation="horizontal"
-            android:layout_gravity="center|end"
+            android:orientation="vertical"
+            android:layout_gravity="end|bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:clickable="true"
-            android:focusable="true">
-            <TextView
-                android:id="@+id/tvSecond"
+            android:layout_margin="25dp">
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:layout_margin="5dp"
-                android:textStyle="bold"
-                android:text="@string/eve_online_rus"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="@color/telegramTrans"/>
-            <ImageView
-                android:id="@+id/ivSecond"
-                android:src="@drawable/telegram_icon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="5dp"
-                android:clickable="true"
-                android:focusable="true" />
+                app:cardBackgroundColor="@color/end"
+                app:cardCornerRadius="30dp">
+                <ImageButton
+                    android:id="@+id/ibPlayPause"
+                    android:src="@android:drawable/ic_media_play"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/end"
+                    android:contentDescription="@string/play_pause" />
+
+            </androidx.cardview.widget.CardView>
+
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/nvMenu"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        android:background="@drawable/gradient2"
+        app:menu="@menu/activity_main_drawer">
+
+    </com.google.android.material.navigation.NavigationView>
+
+</androidx.drawerlayout.widget.DrawerLayout>
