@@ -18,4 +18,6 @@
     <string name="song_history">История песен</string>
     <string name="album">album</string>
     <string name="song_name">название трека</string>
+    <string name="discord">Discord</string>
+    <string name="vk">VK</string>
 </resources>

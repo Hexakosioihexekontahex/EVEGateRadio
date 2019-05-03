@@ -12,12 +12,18 @@ import com.hex.evegate.R
 
 class CommsActivity: AppCompatActivity() {
 
-    lateinit var llFirst: LinearLayout
-    lateinit var tvFirst: TextView
-    lateinit var ivFirst: ImageView
-    lateinit var llSecond: LinearLayout
-    lateinit var tvSecond: TextView
-    lateinit var ivSecond: ImageView
+    private lateinit var llFirst: LinearLayout
+    private lateinit var tvFirst: TextView
+    private lateinit var ivFirst: ImageView
+    private lateinit var llSecond: LinearLayout
+    private lateinit var tvSecond: TextView
+    private lateinit var ivSecond: ImageView
+    private lateinit var llDiscord: LinearLayout
+    private lateinit var tvDiscord: TextView
+    private lateinit var ivDiscord: ImageView
+    private lateinit var llVk: LinearLayout
+    private lateinit var tvVk: TextView
+    private lateinit var ivVk: ImageView
 
     private var firstClickListener = { _: View ->
         startActivity(Intent(Intent.ACTION_VIEW,
@@ -27,6 +33,16 @@ class CommsActivity: AppCompatActivity() {
     private var secondClickListener = { _: View ->
         startActivity(Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://t.me/EVE_ONLINE_RUS")))
+    }
+
+    private var discordClickListener = { _: View ->
+        startActivity(Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://discord.gg/7DpE7wF")))
+    }
+
+    private var vkClickListener = { _: View ->
+        startActivity(Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://vk.com/evegateradio")))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +56,12 @@ class CommsActivity: AppCompatActivity() {
         llSecond = findViewById(R.id.llSecond)
         tvSecond = findViewById(R.id.tvSecond)
         ivSecond = findViewById(R.id.ivSecond)
+        llDiscord = findViewById(R.id.llDiscord)
+        tvDiscord = findViewById(R.id.tvDiscord)
+        ivDiscord = findViewById(R.id.ivDiscord)
+        llVk = findViewById(R.id.llVk)
+        tvVk = findViewById(R.id.tvVk)
+        ivVk = findViewById(R.id.ivVk)
 
         llFirst.setOnClickListener(firstClickListener)
         tvFirst.setOnClickListener(firstClickListener)
@@ -48,5 +70,13 @@ class CommsActivity: AppCompatActivity() {
         llSecond.setOnClickListener(secondClickListener)
         tvSecond.setOnClickListener(secondClickListener)
         ivSecond.setOnClickListener(secondClickListener)
+
+        llDiscord.setOnClickListener(discordClickListener)
+        tvDiscord.setOnClickListener(discordClickListener)
+        ivDiscord.setOnClickListener(discordClickListener)
+
+        llVk.setOnClickListener(vkClickListener)
+        tvVk.setOnClickListener(vkClickListener)
+        ivVk.setOnClickListener(vkClickListener)
     }
 }
