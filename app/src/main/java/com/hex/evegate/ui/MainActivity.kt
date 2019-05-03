@@ -103,6 +103,9 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             if (result.body() != null) {
                 tvCount.text = result.body()!!.listeners.total
                 tvSongName.text = result.body()!!.now_playing.song.text
+                if (result.body()!!.live.is_live == "true") {
+                    findViewById<ImageView>(R.id.ivLive).visibility = ImageView.VISIBLE
+                }
                 try {
                     Glide.with(this).load(result.body()!!.now_playing.song.art)
                             .into(ivBackground)

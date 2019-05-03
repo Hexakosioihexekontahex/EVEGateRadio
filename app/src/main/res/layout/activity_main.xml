@@ -148,6 +148,16 @@
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/ivLive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:scaleX="5"
+            android:scaleY="5"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_mic_red_48x40dp"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
