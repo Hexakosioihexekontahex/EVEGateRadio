@@ -84,6 +84,37 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llYoutube"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:id="@+id/ivYoutube"
+                    android:src="@drawable/youtube_icon"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="5dp"
+                    android:clickable="true"
+                    android:focusable="true" />
+                <TextView
+                    android:id="@+id/tvYoutube"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="24sp"
+                    android:textColor="@color/white"
+                    android:layout_margin="5dp"
+                    android:textStyle="bold"
+                    android:text="@string/youtube"
+                    android:background="@color/telegramTrans"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/llDiscord"
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"

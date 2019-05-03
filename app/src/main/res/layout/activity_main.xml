@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/gradient"
         app:titleTextColor="#ffffff"
-        app:title="@string/app_name"
         android:id="@+id/toolbar">
 
     </androidx.appcompat.widget.Toolbar>

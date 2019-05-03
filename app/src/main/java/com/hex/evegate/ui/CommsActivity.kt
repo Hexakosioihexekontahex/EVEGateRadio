@@ -44,6 +44,7 @@ class CommsActivity: AppCompatActivity() {
         startActivity(Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://vk.com/evegateradio")))
     }
+    //https://www.youtube.com/channel/UCAif8AY9riM1ADWWrytHYZw
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
