@@ -6,6 +6,7 @@
 
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="gray">#7C7C7C</color>
     <color name="start">#4D4D70</color>
     <color name="end">#0F1A27</color>
     <color name="telegram">#2196F3</color>
