@@ -66,7 +66,7 @@ class HistoryActivity: AppCompatActivity() {
     private fun handleNowPlayingResponse(result: Response<NowPlayingDto>) {
         if (result.isSuccessful) {
             result.body()?.let {
-                songList = it.song_history.map { songHistory -> songHistory.song }
+                songList = it.song_history.map { songHistory -> songHistory.song.apply { lyrics = songHistory.playlist } }
             }
             val adapter = ItemsRVAdapter(this@HistoryActivity)
             adapter.setData(songList)

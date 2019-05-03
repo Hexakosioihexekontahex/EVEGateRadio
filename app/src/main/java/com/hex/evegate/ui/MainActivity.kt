@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     lateinit var tvCount: TextView
     lateinit var tvSongName: TextView
+    lateinit var tvPlaylist: TextView
     lateinit var ivImage: ImageView
     lateinit var ivBackground: ImageView
     lateinit var chbHQ: CheckBox
@@ -63,6 +64,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         radioManager = RadioManager.with(this)
         tvCount = findViewById(R.id.tvCount)
         tvSongName = findViewById(R.id.tvSongName)
+        tvPlaylist = findViewById(R.id.tvPlaylist)
         ivImage = findViewById(R.id.ivImage)
         ivBackground = findViewById(R.id.ivBackground)
         dlDrawer = findViewById(R.id.dlDrawer)
@@ -103,6 +105,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             if (result.body() != null) {
                 tvCount.text = result.body()!!.listeners.total
                 tvSongName.text = result.body()!!.now_playing.song.text
+                tvPlaylist.text = result.body()!!.now_playing.playlist
                 if (result.body()!!.live.is_live == "true") {
                     findViewById<ImageView>(R.id.ivLive).visibility = ImageView.VISIBLE
                 }

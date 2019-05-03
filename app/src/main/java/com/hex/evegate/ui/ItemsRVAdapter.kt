@@ -55,6 +55,7 @@ class ItemsRVAdapter(private val ctx: Context) : RecyclerView.Adapter<ItemsRVAda
     private fun initRow(holder: SongViewHolder, position: Int) {
         val song = items[position]
         holder.tvSongName.text = song.text
+        holder.tvPlaylist.text = song.lyrics
         Glide.with(ctx)
                 .load(song.art)
                 .into(holder.ivSongAlbum)
@@ -63,5 +64,6 @@ class ItemsRVAdapter(private val ctx: Context) : RecyclerView.Adapter<ItemsRVAda
     class SongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var tvSongName = itemView.findViewById<TextView>(R.id.tvSongName)
         var ivSongAlbum = itemView.findViewById<ImageView>(R.id.ivSongAlbum)
+        var tvPlaylist = itemView.findViewById<TextView>(R.id.tvPlaylist)
     }
 }
