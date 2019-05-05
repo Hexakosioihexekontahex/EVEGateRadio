@@ -20,7 +20,8 @@
 
         <activity
             android:name="com.hex.evegate.ui.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,9 +29,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.HistoryActivity"
-            android:label="@string/song_history"/>
+            android:label="@string/song_history"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.CommsActivity"
-            android:label="@string/our_comms" />
+            android:label="@string/our_comms"
+            android:screenOrientation="portrait"/>
 
         <!-- A receiver that will receive media buttons and send as
             intents to your MediaBrowserServiceCompat implementation.

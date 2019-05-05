@@ -1,7 +1,6 @@
 package com.hex.evegate.ui
 
 import android.content.Context
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hex.evegate.R
 import com.hex.evegate.api.dto.Song
-import java.lang.Exception
 
 class ItemsRVAdapter(private val ctx: Context) : RecyclerView.Adapter<ItemsRVAdapter.SongViewHolder>() {
     private var items: MutableList<Song> = mutableListOf()
