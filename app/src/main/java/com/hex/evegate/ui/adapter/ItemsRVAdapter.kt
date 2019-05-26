@@ -1,4 +1,4 @@
-package com.hex.evegate.ui
+package com.hex.evegate.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater

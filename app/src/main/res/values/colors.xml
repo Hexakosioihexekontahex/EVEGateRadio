@@ -12,6 +12,7 @@
     <color name="telegram">#2196F3</color>
     <color name="telegramTrans">#59000000</color>
     <color name="comms">#413934</color>
+    <color name="barVisualizer">#E4FFFFFF</color>
 
     <color name="transparent">#00FFFFFF</color>
 </resources>

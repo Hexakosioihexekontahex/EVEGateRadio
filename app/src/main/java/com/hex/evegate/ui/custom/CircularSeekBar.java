@@ -25,7 +25,7 @@
  * reference material, and as a result, were extremely helpful.
  */
 
-package com.hex.evegate.ui;
+package com.hex.evegate.ui.custom;
 
 import android.content.Context;
 import android.content.res.TypedArray;

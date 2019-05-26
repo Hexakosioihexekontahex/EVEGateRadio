@@ -42,7 +42,7 @@ public class RadioManager {
 
     public boolean isPlaying() {
 
-        return service.isPlaying();
+        return service != null && service.isPlaying();
     }
 
     public void bind() {

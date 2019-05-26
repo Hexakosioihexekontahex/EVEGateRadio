@@ -49,7 +49,7 @@ public class RadioService extends Service implements Player.EventListener, Audio
     private final IBinder iBinder = new LocalBinder();
 
     private final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
-    private SimpleExoPlayer exoPlayer;
+    public SimpleExoPlayer exoPlayer;
     private MediaSession mediaSession;
     private MediaController.TransportControls transportControls;
 

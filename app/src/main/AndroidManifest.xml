@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+    <!-- For android.media.audiofx.Visualizer -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".AppEx"
@@ -19,7 +21,7 @@
         <service android:name="com.hex.evegate.radio.RadioService"/>
 
         <activity
-            android:name="com.hex.evegate.ui.MainActivity"
+            android:name="com.hex.evegate.ui.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -28,10 +30,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.HistoryActivity"
+        <activity android:name=".ui.activity.HistoryActivity"
             android:label="@string/song_history"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.CommsActivity"
+        <activity android:name=".ui.activity.CommsActivity"
             android:label="@string/our_comms"
             android:screenOrientation="portrait"/>
 

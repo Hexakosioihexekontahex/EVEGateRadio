@@ -17,7 +17,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.hex.evegate.R;
 import com.hex.evegate.api.StationApi;
 import com.hex.evegate.net.RetrofitClient;
-import com.hex.evegate.ui.MainActivity;
+import com.hex.evegate.ui.activity.MainActivity;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

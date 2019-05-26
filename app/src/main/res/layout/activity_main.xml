@@ -143,6 +143,22 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_gravity="bottom">
+
+            <!--<com.hex.evegate.ui.VisualizerView-->
+                <!--android:id="@+id/vvVisualizer"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent" />-->
+            <com.hex.evegate.ui.visualizer.BarVisualizer
+                android:id="@+id/bvVisualizer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
         <ImageView
             android:id="@+id/ivLive"
             android:layout_width="wrap_content"

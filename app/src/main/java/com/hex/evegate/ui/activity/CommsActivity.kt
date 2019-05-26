@@ -1,10 +1,11 @@
-package com.hex.evegate.ui
+package com.hex.evegate.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hex.evegate.R
+import com.hex.evegate.ui.adapter.CommsRVAdapter
 import com.hex.evegate.ui.model.allComms
 
 class CommsActivity: AppCompatActivity() {

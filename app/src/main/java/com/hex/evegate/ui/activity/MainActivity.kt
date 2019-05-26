@@ -1,15 +1,17 @@
-package com.hex.evegate.ui
+package com.hex.evegate.ui.activity
 
 import android.content.Intent
-import android.net.Uri
+import android.media.AudioManager
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
@@ -21,6 +23,8 @@ import com.hex.evegate.api.dto.NowPlayingDto
 import com.hex.evegate.net.RetrofitClient
 import com.hex.evegate.radio.PlaybackStatus
 import com.hex.evegate.radio.RadioManager
+import com.hex.evegate.ui.visualizer.BarVisualizer
+import com.hex.evegate.ui.visualizer.BaseVisualizer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -29,7 +33,7 @@ import org.greenrobot.eventbus.Subscribe
 import retrofit2.Response
 import retrofit2.Retrofit
 
-class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     lateinit var tvCount: TextView
     lateinit var tvSongName: TextView
@@ -49,6 +53,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     private var compositeDisposable: CompositeDisposable? = null
     private var retrofit: Retrofit? = null
     private var stationApi: StationApi? = null
+    var bvVisualizer: BarVisualizer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,9 +92,12 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
         ibPlayPause = findViewById(R.id.ibPlayPause)
         ibPlayPause.setOnClickListener { v ->
-            if (!TextUtils.isEmpty(streamURL))
+            if (!TextUtils.isEmpty(streamURL)) {
                 radioManager.playOrPause(streamURL)
+            }
         }
+
+
     }
 
     private fun getNowPlayingDto() {
@@ -136,6 +144,27 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         EventBus.getDefault().register(this)
     }
 
+    private fun startVisualizer() {
+        if (RadioManager.with(this).isPlaying) {
+            bvVisualizer?.visualizer?.release()
+            volumeControlStream = AudioManager.STREAM_MUSIC
+            val id = RadioManager.getService().exoPlayer.audioSessionId
+
+            bvVisualizer = findViewById<BarVisualizer>(R.id.bvVisualizer).apply {
+                setColor(ContextCompat.getColor(this@MainActivity, R.color.barVisualizer))
+                setDensity(70F)
+                setPlayer(id)
+                visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun stopVisualizer() {
+        bvVisualizer?.visibility = View.GONE
+        bvVisualizer?.release()
+        bvVisualizer?.visualizer?.enabled = false
+    }
+
     public override fun onStop() {
 
         EventBus.getDefault().unregister(this)
@@ -155,6 +184,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         super.onResume()
 
         radioManager.bind()
+        startVisualizer()
     }
 
     override fun onBackPressed() {
@@ -176,22 +206,20 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     @Subscribe
     fun onEvent(status: String) {
-
+        if (status == PlaybackStatus.PLAYING) {
+            startVisualizer()
+            ibPlayPause.setImageResource(android.R.drawable.ic_media_pause)
+        } else {
+            try {stopVisualizer()} catch (e: Exception) {}
+            ibPlayPause.setImageResource(android.R.drawable.ic_media_play)
+        }
         when (status) {
-
             PlaybackStatus.LOADING -> {
+                ibPlayPause.setImageResource(R.drawable.ic_cloud_download_white_24dp)
             }
-
             PlaybackStatus.ERROR ->
-
                 Toast.makeText(this, R.string.no_stream, Toast.LENGTH_SHORT).show()
         }
-
-        ibPlayPause.setImageResource(if (status == PlaybackStatus.PLAYING)
-            android.R.drawable.ic_media_pause
-        else
-            android.R.drawable.ic_media_play)
-
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

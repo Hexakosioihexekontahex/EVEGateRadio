@@ -1,4 +1,4 @@
-package com.hex.evegate.ui
+package com.hex.evegate.ui.activity
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import com.hex.evegate.api.StationApi
 import com.hex.evegate.api.dto.NowPlayingDto
 import com.hex.evegate.api.dto.Song
 import com.hex.evegate.net.RetrofitClient
+import com.hex.evegate.ui.adapter.ItemsRVAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
