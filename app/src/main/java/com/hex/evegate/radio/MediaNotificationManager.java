@@ -24,27 +24,19 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class MediaNotificationManager {
-
     public static final int NOTIFICATION_ID = 555;
     private final String PRIMARY_CHANNEL = "PRIMARY_CHANNEL_ID";
     private final String PRIMARY_CHANNEL_NAME = "PRIMARY";
-
     private RadioService service;
-
     private String strAppName, strLiveBroadcast;
-
     private Resources resources;
-
     private NotificationManagerCompat notificationManager;
 
     public MediaNotificationManager(RadioService service) {
-
         this.service = service;
         this.resources = service.getResources();
-
         strAppName = resources.getString(R.string.app_name);
         strLiveBroadcast = resources.getString(R.string.live_broadcast);
-
         new CompositeDisposable().add(RetrofitClient.getInstance().create(StationApi.class).nowPlaying()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -53,24 +45,17 @@ public class MediaNotificationManager {
                         strAppName = nowPlayingDtoResponse.body().getNow_playing().getSong().getArtist();
                         strLiveBroadcast = nowPlayingDtoResponse.body().getNow_playing().getSong().getTitle();
                     }
-                }, throwable -> {
-
-                }));
-
+                }, throwable -> { }));
         notificationManager = NotificationManagerCompat.from(service);
     }
 
     public void startNotify(String playbackStatus) {
-
         Bitmap largeIcon = BitmapFactory.decodeResource(resources, R.drawable.evegate_large);
-
         int icon = R.drawable.ic_pause_white;
         Intent playbackAction = new Intent(service, RadioService.class);
         playbackAction.setAction(RadioService.ACTION_PAUSE);
         PendingIntent action = PendingIntent.getService(service, 1, playbackAction, 0);
-
         if(playbackStatus.equals(PlaybackStatus.PAUSED)){
-
             icon = R.drawable.ic_play_white;
             playbackAction.setAction(RadioService.ACTION_PLAY);
             action = PendingIntent.getService(service, 2, playbackAction, 0);
@@ -106,20 +91,17 @@ public class MediaNotificationManager {
                 .addAction(icon, "pause", action)
                 .addAction(R.drawable.ic_stop_white, "stop", stopAction)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setWhen(System.currentTimeMillis());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            builder.setStyle(new NotificationCompat.InboxStyle()
-//                    .setSession(service.getMediaSession().getSessionToken())
-//                    .setShowActionsInCompactView(0, 1))
-//                    .setShowCancelButton(true)
-//                    .setCancelButtonIntent(stopAction));
-        }
+                .setWhen(System.currentTimeMillis())
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0, 1)
+                        .setShowCancelButton(true)
+                        .setCancelButtonIntent(stopAction)
+                );
 
         service.startForeground(NOTIFICATION_ID, builder.build());
     }
 
     public void cancelNotify() {
-
         service.stopForeground(true);
     }
 

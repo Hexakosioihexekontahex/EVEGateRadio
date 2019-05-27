@@ -24,10 +24,8 @@ public class RadioManager {
     }
 
     public static RadioManager with(Context context) {
-
         if (instance == null)
             instance = new RadioManager(context);
-
         return instance;
     }
 
@@ -36,38 +34,30 @@ public class RadioManager {
     }
 
     public void playOrPause(String streamUrl){
-
         service.playOrPause(streamUrl);
     }
 
     public boolean isPlaying() {
-
         return service != null && service.isPlaying();
     }
 
     public void bind() {
-
         Intent intent = new Intent(context, RadioService.class);
         context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-
         if(service != null)
             EventBus.getDefault().post(service.getStatus());
     }
 
     public void unbind() {
-
         context.unbindService(serviceConnection);
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
-
         @Override
         public void onServiceConnected(ComponentName arg0, IBinder binder) {
-
             service = ((RadioService.LocalBinder) binder).getService();
             serviceBound = true;
         }
-
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
 

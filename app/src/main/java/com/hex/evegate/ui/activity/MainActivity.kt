@@ -196,7 +196,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 finish()
             } else {
                 lastBackPressTime = now
-                val toast = Toast.makeText(this@MainActivity, "Нажмите \"Назад\" еще раз для выхода их приложения.\nДля продолжения прослушивания в фоновом режиме нажмите \"Свернуть\"", Toast.LENGTH_LONG)
+                val toast = Toast.makeText(this@MainActivity, "Нажмите \"Назад\" еще раз для выхода.", Toast.LENGTH_LONG)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
