@@ -285,8 +285,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 Toast.LENGTH_SHORT).show()
                     }
             )
-        } else if (freshNowPlaying!!.played_at.toLong() + freshNowPlaying!!.duration.toLong() < now) {
-            getNowPlayingDto()
+        } else {
+            try {
+                if (freshNowPlaying!!.played_at.toLong() + freshNowPlaying!!.duration.toLong() < now)
+                getNowPlayingDto()
+            } catch (e: NumberFormatException) {}
         }
     }
 }
