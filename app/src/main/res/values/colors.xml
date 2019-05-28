@@ -14,5 +14,8 @@
     <color name="comms">#413934</color>
     <color name="barVisualizer">#E4FFFFFF</color>
 
+    <color name="progressStart">#E4FFFFFF</color>
+    <color name="progress">#79FFFFFF</color>
+
     <color name="transparent">#00FFFFFF</color>
 </resources>

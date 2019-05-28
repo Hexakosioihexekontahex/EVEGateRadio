@@ -32,7 +32,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/gradient"
         android:id="@+id/dlDrawer"
-        tools:openDrawer="start">
+        tools:openDrawer="end">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -146,7 +146,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_gravity="bottom">
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
 
             <!--<com.hex.evegate.ui.VisualizerView-->
                 <!--android:id="@+id/vvVisualizer"-->
@@ -155,7 +156,33 @@
             <com.hex.evegate.ui.visualizer.BarVisualizer
                 android:id="@+id/bvVisualizer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+                <LinearLayout
+                    android:id="@+id/llProgressStart"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:background="@color/progressStart"/>
+                <LinearLayout
+                    android:layout_width="5dp"
+                    android:orientation="horizontal"
+                    android:layout_height="match_parent"
+                    android:background="@color/progress"/>
+                <LinearLayout
+                    android:id="@+id/llProgressEnd"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="100" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

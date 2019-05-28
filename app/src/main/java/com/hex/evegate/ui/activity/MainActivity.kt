@@ -3,8 +3,8 @@ package com.hex.evegate.ui.activity
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
-import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
@@ -19,15 +19,17 @@ import com.google.android.material.navigation.NavigationView
 import com.hex.evegate.AppEx
 import com.hex.evegate.R
 import com.hex.evegate.api.StationApi
+import com.hex.evegate.api.dto.NowPlaying
 import com.hex.evegate.api.dto.NowPlayingDto
 import com.hex.evegate.net.RetrofitClient
 import com.hex.evegate.radio.PlaybackStatus
 import com.hex.evegate.radio.RadioManager
 import com.hex.evegate.ui.visualizer.BarVisualizer
-import com.hex.evegate.ui.visualizer.BaseVisualizer
+import com.hex.evegate.util.calculateProgressPercent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import retrofit2.Response
@@ -54,6 +56,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var retrofit: Retrofit? = null
     private var stationApi: StationApi? = null
     var bvVisualizer: BarVisualizer? = null
+
+    private var freshNowPlaying: NowPlaying? = null
+    private var freshness: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +116,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun handleNowPlayingResponse(result: Response<NowPlayingDto>) {
         if (result.isSuccessful) {
             if (result.body() != null) {
+                freshNowPlaying = result.body()!!.now_playing
+                freshness = System.currentTimeMillis() / 1000
                 tvCount.text = result.body()!!.listeners.total
                 tvSongName.text = result.body()!!.now_playing.song.text
                 tvPlaylist.text = result.body()!!.now_playing.playlist
@@ -123,6 +130,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 } catch (e: Exception) {
                     /*ignored*/
                 }
+                showProgress(result.body()!!.now_playing)
             }
         } else { Toast.makeText(this, "Ашипко!", Toast.LENGTH_SHORT).show() }
     }
@@ -160,7 +168,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun stopVisualizer() {
-        bvVisualizer?.visibility = View.GONE
+        bvVisualizer?.visibility = View.INVISIBLE
         bvVisualizer?.release()
         bvVisualizer?.visualizer?.enabled = false
     }
@@ -183,8 +191,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
+        initialize()
+        configNet()
+        getNowPlayingDto()
+
         radioManager.bind()
         startVisualizer()
+
+        showProgress().start()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        showProgress().cancel()
     }
 
     override fun onBackPressed() {
@@ -196,7 +215,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 finish()
             } else {
                 lastBackPressTime = now
-                val toast = Toast.makeText(this@MainActivity, "Нажмите \"Назад\" еще раз для выхода.", Toast.LENGTH_LONG)
+                val toast = Toast.makeText(this@MainActivity, "Нажмите \"Назад\" еще раз для выхода.", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
@@ -229,5 +248,45 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         dlDrawer.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun showProgress(nowPlaying: NowPlaying) {
+        val percent = calculateProgressPercent(nowPlaying)
+
+        val llProgressStart = findViewById<LinearLayout>(R.id.llProgressStart)
+        val llProgressEnd = findViewById<LinearLayout>(R.id.llProgressEnd)
+
+        llProgressStart.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, percent)
+        llProgressEnd.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, Math.abs((100 - percent)))
+    }
+
+    private fun showProgress() =
+        GlobalScope.launch(context = Dispatchers.Main ) {
+            while (true) {
+                delay(1000)
+                refreshNowPlaying()
+                freshNowPlaying?.let { showProgress(it)}
+            }
+        }
+
+    private fun refreshNowPlaying() {
+        val now = System.currentTimeMillis() / 1000
+        if (freshNowPlaying == null) {
+            compositeDisposable!!.add(stationApi!!.nowPlaying()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (it.isSuccessful && it.body() != null) {
+                            freshNowPlaying = it.body()!!.now_playing
+                            freshness = System.currentTimeMillis() / 1000
+                        }
+                    }) {
+                        Toast.makeText(this@MainActivity, "Ашипко! ${it.message}",
+                                Toast.LENGTH_SHORT).show()
+                    }
+            )
+        } else if (freshNowPlaying!!.played_at.toLong() + freshNowPlaying!!.duration.toLong() < now) {
+            getNowPlayingDto()
+        }
     }
 }
