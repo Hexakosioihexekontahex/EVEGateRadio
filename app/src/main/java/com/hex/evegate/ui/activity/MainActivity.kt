@@ -198,12 +198,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         radioManager.bind()
         startVisualizer()
 
-        showProgress().start()
+        showProgress.start()
     }
 
     override fun onPause() {
         super.onPause()
-        showProgress().cancel()
+        showProgress.cancelChildren()
     }
 
     override fun onBackPressed() {
@@ -260,7 +260,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         llProgressEnd.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, Math.abs((100 - percent)))
     }
 
-    private fun showProgress() =
+    private val showProgress =
         GlobalScope.launch(context = Dispatchers.Main ) {
             while (true) {
                 delay(1000)
