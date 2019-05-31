@@ -22,4 +22,8 @@
     <string name="vk">VK</string>
     <string name="youtube">Youtube</string>
     <string name="comms_logo">Comms logo</string>
+    <string name="playlistname">PlaylistName</string>
+    <string name="background">Фон</string>
+    <string name="zero">0</string>
+    <string name="live">Live</string>
 </resources>

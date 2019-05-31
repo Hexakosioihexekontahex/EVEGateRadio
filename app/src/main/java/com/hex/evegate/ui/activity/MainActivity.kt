@@ -27,19 +27,18 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
     @InjectPresenter
     lateinit var mainPresenter: MainPresenter
 
-    lateinit var tvCount: TextView
-    lateinit var tvSongName: TextView
-    lateinit var tvPlaylist: TextView
-    lateinit var ivImage: ImageView
-    lateinit var ivBackground: ImageView
-    lateinit var chbHQ: CheckBox
-    lateinit var ibPlayPause: ImageButton
+    private lateinit var tvCount: TextView
+    private lateinit var tvSongName: TextView
+    private lateinit var tvPlaylist: TextView
+    private lateinit var ivBackground: ImageView
+    private lateinit var chbHQ: CheckBox
+    private lateinit var ibPlayPause: ImageButton
     private lateinit var dlDrawer: DrawerLayout
     private lateinit var nvMenu: NavigationView
 
     private var lastBackPressTime: Long = 0
 
-    var bvVisualizer: BarVisualizer? = null
+    private var bvVisualizer: BarVisualizer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +53,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
         tvCount = findViewById(R.id.tvCount)
         tvSongName = findViewById(R.id.tvSongName)
         tvPlaylist = findViewById(R.id.tvPlaylist)
-        ivImage = findViewById(R.id.ivImage)
         ivBackground = findViewById(R.id.ivBackground)
         dlDrawer = findViewById(R.id.dlDrawer)
         nvMenu = findViewById(R.id.nvMenu)
@@ -71,7 +69,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
         }
 
         ibPlayPause = findViewById(R.id.ibPlayPause)
-        ibPlayPause.setOnClickListener { v ->
+        ibPlayPause.setOnClickListener {
             mainPresenter.playOrPause()
         }
         ibPlayPause.setImageResource(if (mainPresenter.isPlaying()) {
@@ -125,13 +123,10 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
             mainPresenter.bind()
         }
         startVisualizer()
-
-        mainPresenter.startShowingProgress()
     }
 
     override fun onPause() {
         super.onPause()
-        mainPresenter.stopShowingProgress()
         try {stopVisualizer()} catch (e: Exception) {}
     }
 

@@ -57,7 +57,7 @@ class MainPresenter : MvpPresenter<MainView>() {
         stationApi = retrofit!!.create(StationApi::class.java)
     }
 
-    fun unConfigNet() {
+    private fun unConfigNet() {
         compositeDisposable?.clear()
     }
 
@@ -128,14 +128,6 @@ class MainPresenter : MvpPresenter<MainView>() {
         unConfigNet()
     }
 
-    fun startShowingProgress() {
-        showProgress.start()
-    }
-
-    fun stopShowingProgress() {
-        showProgress.cancelChildren()
-    }
-
     fun onCheckBoxHqChanged(isChecked: Boolean) {
         AppEx.instance!!.shpHQ = isChecked
         streamURL = if (isChecked) { AppEx.instance!!.resources.getString(R.string.evegateradio_high)
@@ -143,4 +135,14 @@ class MainPresenter : MvpPresenter<MainView>() {
     }
 
     fun isHQ() = AppEx.instance!!.shpHQ
+
+    override fun attachView(view: MainView?) {
+        super.attachView(view)
+        showProgress.start()
+    }
+
+    override fun detachView(view: MainView?) {
+        super.detachView(view)
+        showProgress.cancelChildren()
+    }
 }

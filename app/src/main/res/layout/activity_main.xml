@@ -43,7 +43,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/evegate_large"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:contentDescription="@string/background" />
 
         <LinearLayout
             android:id="@+id/llInfo_1"
@@ -52,24 +53,16 @@
             android:layout_gravity="top"
             android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvCount"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:orientation="horizontal" >
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:drawableLeft="@drawable/ic_person_white_24dp"
+                android:drawableStart="@drawable/ic_person_white_24dp"
+                android:text="@string/zero" />
 
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_person_white_24dp"/>
-
-                <TextView
-                    android:id="@+id/tvCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="24sp"
-                    android:text="0"/>
-            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,27 +88,13 @@
             </LinearLayout>
             <TextView
                 android:id="@+id/tvPlaylist"
-                android:text="PlaylistName"
+                android:text="@string/playlistname"
                 android:textStyle="italic"
                 android:textSize="18sp"
                 android:textColor="@color/gray"
                 android:gravity="end"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="128dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/ivImage"
-                    android:visibility="gone"
-                    android:layout_gravity="start"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitCenter"/>
-
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -149,10 +128,6 @@
             android:layout_gravity="bottom"
             android:orientation="vertical">
 
-            <!--<com.hex.evegate.ui.VisualizerView-->
-                <!--android:id="@+id/vvVisualizer"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent" />-->
             <com.hex.evegate.ui.visualizer.BarVisualizer
                 android:id="@+id/bvVisualizer"
                 android:layout_width="match_parent"
@@ -194,7 +169,8 @@
             android:scaleX="5"
             android:scaleY="5"
             android:layout_gravity="center"
-            android:src="@drawable/ic_mic_red_48x40dp"/>
+            android:src="@drawable/ic_mic_red_48x40dp"
+            android:contentDescription="@string/live" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

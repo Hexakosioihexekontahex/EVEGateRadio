@@ -27,7 +27,7 @@ class HistoryActivity: AppCompatActivity() {
     private var retrofit: Retrofit? = null
     private var stationApi: StationApi? = null
 
-    var songList = listOf<Song>()
+    private var songList = listOf<Song>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
