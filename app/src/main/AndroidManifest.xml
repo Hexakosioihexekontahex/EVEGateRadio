@@ -22,8 +22,7 @@
 
         <activity
             android:name="com.hex.evegate.ui.activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,11 +30,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.HistoryActivity"
-            android:label="@string/song_history"
-            android:screenOrientation="portrait"/>
+            android:label="@string/song_history"/>
         <activity android:name=".ui.activity.CommsActivity"
-            android:label="@string/our_comms"
-            android:screenOrientation="portrait"/>
+            android:label="@string/our_comms"/>
 
         <!-- A receiver that will receive media buttons and send as
             intents to your MediaBrowserServiceCompat implementation.
@@ -47,6 +44,20 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".ui.widget.PlayPauseWidget"
+            android:icon="@mipmap/ic_evegate"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action
+                    android:name="android.appwidget.action.APPWIDGET_UPDATE">
+                </action>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_metadata">
+            </meta-data>
+        </receiver>
     </application>
 
 </manifest>

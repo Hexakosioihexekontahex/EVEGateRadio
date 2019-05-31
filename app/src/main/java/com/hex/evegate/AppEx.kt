@@ -2,6 +2,7 @@ package com.hex.evegate
 
 import android.app.Application
 import android.content.Context
+import com.hex.evegate.radio.RadioManager
 
 class AppEx : Application() {
 
@@ -10,9 +11,14 @@ class AppEx : Application() {
         var instance: AppEx? = null
     }
 
+//    public var radioManager: RadioManager? = null
+
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+//        radioManager = RadioManager.with(instance)
+//        radioManager?.bind()
 
 //        TrafficCop.Builder()
 //                // Set a threshold for downloads
@@ -29,6 +35,11 @@ class AppEx : Application() {
 //                // Pass a string that uniquely identifies this instance.
 //                .register("myTrafficCop", this).startMeasuring()
     }
+
+//    override fun onTerminate() {
+//        super.onTerminate()
+//        radioManager?.unbind()
+//    }
 
     var shpHQ: Boolean
         get() {
