@@ -11,14 +11,13 @@ import com.hex.evegate.AppEx
 import com.hex.evegate.R
 import com.hex.evegate.radio.RadioManager
 
-
 class PlayPauseWidget : AppWidgetProvider() {
     private val clickListener = "WidgetClickListener"
+    private val radioManager = RadioManager.with(AppEx.instance)
+    private lateinit var streamURL: String
 
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-
-
 
         if (context != null && appWidgetManager != null) {
             val widget = ComponentName(context, PlayPauseWidget::class.java)
@@ -27,6 +26,14 @@ class PlayPauseWidget : AppWidgetProvider() {
                 val remoteViews = RemoteViews(context.packageName, R.layout.widget)
                 remoteViews.setOnClickPendingIntent(
                         R.id.widget_ivPlayPause, getPendingSelfIntent(context, clickListener))
+                streamURL = if (AppEx.instance!!.shpHQ) {
+                    AppEx.instance!!.resources.getString(R.string.evegateradio_high)
+                } else {
+                    AppEx.instance!!.resources.getString(R.string.evegateradio_low)
+                }
+                if (!radioManager.isPlaying) {
+                    radioManager.bind()
+                }
                 remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource",
                         if (RadioManager.with(AppEx.instance).isPlaying) {
                     android.R.drawable.ic_media_pause
@@ -48,8 +55,14 @@ class PlayPauseWidget : AppWidgetProvider() {
         super.onReceive(context, intent)
 
         if (context != null) {
+            streamURL = if (AppEx.instance!!.shpHQ) {
+                AppEx.instance!!.resources.getString(R.string.evegateradio_high)
+            } else {
+                AppEx.instance!!.resources.getString(R.string.evegateradio_low)
+            }
+
             if (clickListener == intent?.action) {
-                RadioManager.with(AppEx.instance).playOrPause(context.resources.getString(R.string.evegateradio_high))
+                radioManager.playOrPause(streamURL)
             }
 
             val remoteViews = RemoteViews(context.packageName, R.layout.widget)
@@ -58,7 +71,7 @@ class PlayPauseWidget : AppWidgetProvider() {
             val allWidgetIds = appWidgetManager.getAppWidgetIds(widget)
 
             for (id in allWidgetIds) {
-                remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource", if (RadioManager.with(AppEx.instance).isPlaying) {
+                remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource", if (radioManager.isPlaying) {
                     android.R.drawable.ic_media_pause
                 } else {
                     android.R.drawable.ic_media_play
