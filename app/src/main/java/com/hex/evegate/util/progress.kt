@@ -1,6 +1,6 @@
 package com.hex.evegate.util
 
-import com.hex.evegate.api.dto.NowPlaying
+import com.hex.evegate.ui.mvp.model.NowPlaying
 
 public fun calculateProgressPercent(startTime: Long, duration: Long) : Float {
     val now = System.currentTimeMillis() / 1000

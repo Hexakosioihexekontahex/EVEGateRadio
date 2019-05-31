@@ -5,10 +5,10 @@ import com.arellomobile.mvp.MvpPresenter
 import com.hex.evegate.AppEx
 import com.hex.evegate.R
 import com.hex.evegate.api.StationApi
-import com.hex.evegate.api.dto.NowPlaying
-import com.hex.evegate.api.dto.NowPlayingDto
 import com.hex.evegate.net.RetrofitClient
 import com.hex.evegate.radio.RadioManager
+import com.hex.evegate.ui.mvp.model.NowPlaying
+import com.hex.evegate.ui.mvp.model.NowPlayingDto
 import com.hex.evegate.ui.mvp.view.MainView
 import com.hex.evegate.util.calculateProgressPercent
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -48,6 +48,7 @@ class MainPresenter : MvpPresenter<MainView>() {
         } else {
             AppEx.instance!!.resources.getString(R.string.evegateradio_low)
         }
+        radioManager.bind()
         getNowPlayingDto()
     }
 
@@ -61,7 +62,8 @@ class MainPresenter : MvpPresenter<MainView>() {
         compositeDisposable?.clear()
     }
 
-    fun getNowPlayingDto() {
+    private fun getNowPlayingDto() {
+        freshness = System.currentTimeMillis() / 1000
         compositeDisposable!!.add(stationApi!!.nowPlaying()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -73,25 +75,25 @@ class MainPresenter : MvpPresenter<MainView>() {
         if (result.isSuccessful) {
             if (result.body() != null) {
                 freshNowPlaying = result.body()!!.now_playing
-                freshness = System.currentTimeMillis() / 1000
-                viewState.setTextViewCountText(result.body()!!.listeners.total)
-                viewState.setTextViewSongName(result.body()!!.now_playing.song.text)
-                viewState.setTextViewPlayList(result.body()!!.now_playing.playlist)
+                viewState.setCount(result.body()!!.listeners.total)
+                viewState.setSongName(result.body()!!.now_playing.song.text)
+                viewState.setPlayList(result.body()!!.now_playing.playlist)
                 viewState.showLive(result.body()!!.live.is_live == "true")
                 viewState.showArt(result.body()!!.now_playing.song.art)
                 viewState.showProgress(calculateProgressPercent(result.body()!!.now_playing))
             }
         } else {
-            viewState.showShortToast("Ашипко!")
+            viewState.showMessage("Ашипко!")
         }
     }
 
     private fun handleNowPlayingError(error: Throwable) {
-        viewState.showShortToast("Ашипко! ${error.message}")
+        viewState.showMessage("Ашипко! ${error.message}")
     }
 
     private fun refreshNowPlaying() {
         val now = System.currentTimeMillis() / 1000
+        freshness = now
         if (freshNowPlaying == null) {
             compositeDisposable!!.add(stationApi!!.nowPlaying()
                     .subscribeOn(Schedulers.io())
@@ -99,13 +101,13 @@ class MainPresenter : MvpPresenter<MainView>() {
                     .subscribe({
                         if (it.isSuccessful && it.body() != null) {
                             freshNowPlaying = it.body()!!.now_playing
-                            freshness = System.currentTimeMillis() / 1000
                         }
-                    }) { viewState.showShortToast("Ашипко! ${it.message}") }
+                    }) { viewState.showMessage("Ашипко! ${it.message}") }
             )
         } else {
             try {
-                if (freshNowPlaying!!.played_at.toLong() + freshNowPlaying!!.duration.toLong() < now)
+                if (freshNowPlaying!!.played_at.toLong() + freshNowPlaying!!.duration.toLong() < now &&
+                        freshness?.plus(10/*sec*/) ?: 0L < now)
                     getNowPlayingDto()
             } catch (e: NumberFormatException) {}
         }
@@ -116,10 +118,6 @@ class MainPresenter : MvpPresenter<MainView>() {
     }
 
     fun isPlaying() = radioManager.isPlaying
-
-    fun bind() {
-        radioManager.bind()
-    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -138,6 +136,7 @@ class MainPresenter : MvpPresenter<MainView>() {
 
     override fun attachView(view: MainView?) {
         super.attachView(view)
+        getNowPlayingDto()
         showProgress.start()
     }
 

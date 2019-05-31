@@ -1,18 +1,18 @@
-package com.hex.evegate.api.dto
+package com.hex.evegate.ui.mvp.model
 
 import com.google.gson.annotations.SerializedName
 
 data class Station (
-    @SerializedName("name") var name: String,
-    @SerializedName("is_public") var is_public: String,
-    @SerializedName("description") var description: String,
-    @SerializedName("mounts") var mounts: Array<Mounts>,
-    @SerializedName("remotes") var remotes: Array<String>,
-    @SerializedName("backend") var backend: String,
-    @SerializedName("id") var id: String,
-    @SerializedName("shortcode") var shortcode: String,
-    @SerializedName("listen_url") var listen_url: String,
-    @SerializedName("frontend") var frontend: String
+        @SerializedName("name") var name: String,
+        @SerializedName("is_public") var is_public: String,
+        @SerializedName("description") var description: String,
+        @SerializedName("mounts") var mounts: Array<Mounts>,
+        @SerializedName("remotes") var remotes: Array<String>,
+        @SerializedName("backend") var backend: String,
+        @SerializedName("id") var id: String,
+        @SerializedName("shortcode") var shortcode: String,
+        @SerializedName("listen_url") var listen_url: String,
+        @SerializedName("frontend") var frontend: String
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

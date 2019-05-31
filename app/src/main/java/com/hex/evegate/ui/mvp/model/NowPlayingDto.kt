@@ -1,15 +1,15 @@
-package com.hex.evegate.api.dto
+package com.hex.evegate.ui.mvp.model
 
 import com.google.gson.annotations.SerializedName
 
 data class NowPlayingDto (
-    @SerializedName("cache") var cache: String,
-    @SerializedName("listeners") var listeners: Listeners,
-    @SerializedName("now_playing") var now_playing: NowPlaying,
-    @SerializedName("song_history") var song_history: Array<SongHistory>,
-    @SerializedName("station") var station: Station,
-    @SerializedName("live") var live: Live,
-    @SerializedName("playing_next") var playing_next: PlayingNext
+        @SerializedName("cache") var cache: String,
+        @SerializedName("listeners") var listeners: Listeners,
+        @SerializedName("now_playing") var now_playing: NowPlaying,
+        @SerializedName("song_history") var song_history: Array<SongHistory>,
+        @SerializedName("station") var station: Station,
+        @SerializedName("live") var live: Live,
+        @SerializedName("playing_next") var playing_next: PlayingNext
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

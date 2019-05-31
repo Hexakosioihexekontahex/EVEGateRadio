@@ -35,6 +35,8 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
     private lateinit var ibPlayPause: ImageButton
     private lateinit var dlDrawer: DrawerLayout
     private lateinit var nvMenu: NavigationView
+    private lateinit var llProgressStart: LinearLayout
+    private lateinit var llProgressEnd: LinearLayout
 
     private var lastBackPressTime: Long = 0
 
@@ -75,6 +77,9 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
         ibPlayPause.setImageResource(if (mainPresenter.isPlaying()) {
             android.R.drawable.ic_media_pause } else { android.R.drawable.ic_media_play }
         )
+
+        llProgressStart = findViewById(R.id.llProgressStart)
+        llProgressEnd = findViewById(R.id.llProgressEnd)
     }
 
     public override fun onStart() {
@@ -117,11 +122,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
         super.onResume()
 
         initialize()
-        mainPresenter.getNowPlayingDto()
-
-        if (!mainPresenter.isPlaying()) {
-            mainPresenter.bind()
-        }
         startVisualizer()
     }
 
@@ -139,7 +139,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
                 finish()
             } else {
                 lastBackPressTime = now
-                showShortToast("Нажмите \"Назад\" еще раз для выхода.")
+                showMessage("Нажмите \"Назад\" еще раз для выхода.")
             }
         }
 
@@ -159,7 +159,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
                 ibPlayPause.setImageResource(R.drawable.ic_cloud_download_white_24dp)
             }
             PlaybackStatus.ERROR ->
-                showShortToast(R.string.no_stream)
+                showMessage(R.string.no_stream)
         }
     }
 
@@ -173,17 +173,15 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
     }
 
     override fun showProgress(percent: Float) {
-        val llProgressStart = findViewById<LinearLayout>(R.id.llProgressStart)
-        val llProgressEnd = findViewById<LinearLayout>(R.id.llProgressEnd)
-
         llProgressStart.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, percent)
         llProgressEnd.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, Math.abs((100 - percent)))
     }
-    override fun showShortToast(message: String) {
+
+    override fun showMessage(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    override fun showShortToast(res: Int) {
+    override fun showMessage(res: Int) {
         Toast.makeText(this, res, Toast.LENGTH_SHORT).show()
     }
 
@@ -198,7 +196,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
                 if (isLive) { ImageView.VISIBLE } else { ImageView.GONE }
     }
 
-    override fun setTextViewPlayList(playlist: String) { tvPlaylist.text = playlist }
-    override fun setTextViewSongName(songName: String) { tvSongName.text = songName }
-    override fun setTextViewCountText(count: String) { tvCount.text = count }
+    override fun setPlayList(playlist: String) { tvPlaylist.text = playlist }
+    override fun setSongName(songName: String) { tvSongName.text = songName }
+    override fun setCount(count: String) { tvCount.text = count }
 }

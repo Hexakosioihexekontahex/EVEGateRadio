@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.hex.evegate.R
-import com.hex.evegate.ui.model.Comms
+import com.hex.evegate.ui.mvp.model.Comms
 
 class CommsRVAdapter(private val ctx: Context) : RecyclerView.Adapter<CommsRVAdapter.CommsViewHolder>() {
     private var items: MutableList<Comms> = mutableListOf()

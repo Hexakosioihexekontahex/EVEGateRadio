@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hex.evegate.R
-import com.hex.evegate.api.dto.Song
+import com.hex.evegate.ui.mvp.model.Song
 
 class ItemsRVAdapter(private val ctx: Context) : RecyclerView.Adapter<ItemsRVAdapter.SongViewHolder>() {
     private var items: MutableList<Song> = mutableListOf()

@@ -1,4 +1,4 @@
-package com.hex.evegate.api.dto
+package com.hex.evegate.ui.mvp.model
 
 import com.google.gson.annotations.SerializedName
 

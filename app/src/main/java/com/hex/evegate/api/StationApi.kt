@@ -1,6 +1,6 @@
 package com.hex.evegate.api
 
-import com.hex.evegate.api.dto.NowPlayingDto
+import com.hex.evegate.ui.mvp.model.NowPlayingDto
 
 import io.reactivex.Observable
 import retrofit2.Response

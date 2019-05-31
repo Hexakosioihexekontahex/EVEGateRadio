@@ -1,4 +1,4 @@
-package com.hex.evegate.ui.model
+package com.hex.evegate.ui.mvp.model
 
 import com.hex.evegate.R
 
