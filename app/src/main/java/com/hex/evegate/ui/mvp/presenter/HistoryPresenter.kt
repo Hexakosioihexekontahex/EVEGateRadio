@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
 
 @InjectViewState
 class HistoryPresenter : MvpPresenter<HistoryView>() {
@@ -25,21 +24,27 @@ class HistoryPresenter : MvpPresenter<HistoryView>() {
 
     private suspend fun getHistory() {
         CoroutineScope(Dispatchers.IO).launch {
-            val response = RetrofitClient.getInstance().create(StationApi::class.java).nowPlaying().await()
-            if (response.isSuccessful) {
-                withContext(Dispatchers.Main) {
-                    var history: List<Song>? = null
-                    response.body()?.let { nowPlayingDto -> run {
-                        history = nowPlayingDto.song_history.map { songHistory ->
-                                songHistory.song.apply { lyrics = songHistory.playlist }
+            try {
+                val response = RetrofitClient.getInstance().create(StationApi::class.java).nowPlaying().await()
+                if (response.isSuccessful) {
+                    withContext(Dispatchers.Main) {
+                        var history: List<Song>? = null
+                        response.body()?.let { nowPlayingDto -> run {
+                            history = nowPlayingDto.song_history.map { songHistory ->
+                                    songHistory.song.apply { lyrics = songHistory.playlist }
+                                }
                             }
+                            viewState.showHistory(history)
                         }
-                        viewState.showHistory(history)
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        viewState.showMessage("Ошибка! ${response.errorBody() ?: "Сервер не отвечает"}")
                     }
                 }
-            } else {
+            } catch (e: Throwable) {
                 withContext(Dispatchers.Main) {
-                    viewState.showMessage("Ашипко!")
+                    viewState.showMessage("Ошибка! ${e.message ?: "Проверьте интернет соединение"}")
                 }
             }
         }

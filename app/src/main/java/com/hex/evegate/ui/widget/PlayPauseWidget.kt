@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.RemoteViews
 import com.hex.evegate.AppEx
 import com.hex.evegate.R
@@ -16,30 +17,34 @@ import org.greenrobot.eventbus.Subscribe
 
 class PlayPauseWidget : AppWidgetProvider() {
     private val clickListener = "WidgetClickListener"
-    private val radioManager = RadioManager.with(AppEx.instance)
-    private lateinit var streamURL: String
+    private var streamURL: String? = null
     private var ctx: Context? = null
 
     override fun onEnabled(context: Context?) {
-        EventBus.getDefault().register(this)
-
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
         super.onEnabled(context)
     }
 
     override fun onRestored(context: Context?, oldWidgetIds: IntArray?, newWidgetIds: IntArray?) {
-        EventBus.getDefault().register(this)
-
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
         super.onRestored(context, oldWidgetIds, newWidgetIds)
     }
 
     override fun onDisabled(context: Context?) {
-        EventBus.getDefault().unregister(this)
-
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
         super.onDisabled(context)
     }
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
-        EventBus.getDefault().unregister(this)
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
 
         super.onDeleted(context, appWidgetIds)
     }
@@ -60,9 +65,10 @@ class PlayPauseWidget : AppWidgetProvider() {
                 } else {
                     AppEx.instance!!.resources.getString(R.string.evegateradio_low)
                 }
-                if (!radioManager.isPlaying) {
-                    radioManager.bind()
+                if (!RadioManager.getInstance().isPlaying) {
+                    RadioManager.getInstance().bind()
                 }
+                appWidgetManager.updateAppWidget(id, remoteViews)
             }
         }
     }
@@ -76,6 +82,7 @@ class PlayPauseWidget : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
 
+        Log.d("PlayPauseWidget", "action ${intent?.action}")
         if (context != null) {
             ctx = context
             streamURL = if (AppEx.instance!!.shpHQ) {
@@ -83,10 +90,9 @@ class PlayPauseWidget : AppWidgetProvider() {
             } else {
                 AppEx.instance!!.resources.getString(R.string.evegateradio_low)
             }
-
-            if (clickListener == intent?.action) {
-                radioManager.playOrPause(streamURL)
-            }
+        }
+        if (clickListener == intent?.action) {
+            RadioManager.getInstance().playOrPause(streamURL ?: AppEx.instance!!.resources.getString(R.string.evegateradio_high))
         }
     }
 
@@ -94,16 +100,21 @@ class PlayPauseWidget : AppWidgetProvider() {
     @Subscribe
     fun onEvent(status: String) {
         val remoteViews = RemoteViews(ctx?.packageName, R.layout.widget)
-        if (status == PlaybackStatus.PLAYING) {
-            remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource", android.R.drawable.ic_media_pause)
-        } else {
-            remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource", android.R.drawable.ic_media_play)
-        }
         when (status) {
             PlaybackStatus.LOADING -> {
-                remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource", R.drawable.ic_cloud_download_white_24dp)
+                remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource",
+                        R.drawable.ic_file_download_white_24dp)
             }
-            PlaybackStatus.ERROR -> {}
+            PlaybackStatus.PLAYING -> {
+                remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource",
+                        android.R.drawable.ic_media_pause)
+            }
+            PlaybackStatus.ERROR -> {
+                remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource",
+                        android.R.drawable.ic_dialog_alert)
+            }
+
+            else -> remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource", android.R.drawable.ic_media_play)
         }
         ctx?.let {
             val appWidgetManager = AppWidgetManager.getInstance(ctx)

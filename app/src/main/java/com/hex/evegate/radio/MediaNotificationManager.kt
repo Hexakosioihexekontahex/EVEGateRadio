@@ -9,21 +9,19 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.os.Build
+
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+
 import com.hex.evegate.R
-import com.hex.evegate.api.StationApi
-import com.hex.evegate.net.RetrofitClient
 import com.hex.evegate.ui.activity.MainActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 
 class MediaNotificationManager(private val service: RadioService) {
     private val PRIMARY_CHANNEL = "PRIMARY_CHANNEL_ID"
     private val PRIMARY_CHANNEL_NAME = "PRIMARY"
-    private var strAppName: String? = null
-    private var strLiveBroadcast: String? = null
+    private val strAppName: String
+    private val strLiveBroadcast: String
     private val resources: Resources
     private val notificationManager: NotificationManagerCompat
 
@@ -31,19 +29,6 @@ class MediaNotificationManager(private val service: RadioService) {
         this.resources = service.resources
         strAppName = resources.getString(R.string.app_name)
         strLiveBroadcast = resources.getString(R.string.live_broadcast)
-
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val response = RetrofitClient.getInstance()
-//                    .create(StationApi::class.java)
-//                    .nowPlaying()
-//                    .await()
-//            if (response.isSuccessful) {
-//                response.body()?.let {nowPlayingDto ->
-//                    strAppName = nowPlayingDto.now_playing.song.artist
-//                    strLiveBroadcast = nowPlayingDto.now_playing.song.title
-//                }
-//            }
-//        }
         notificationManager = NotificationManagerCompat.from(service)
     }
 

@@ -11,6 +11,8 @@ interface HistoryView : MvpView {
 
     fun showHistory(songList: List<Song>?)
 
+    fun configViews()
+
     @StateStrategyType(value = OneExecutionStateStrategy::class)
     fun showMessage(message: String)
 

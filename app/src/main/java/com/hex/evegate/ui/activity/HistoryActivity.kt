@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.hex.evegate.R
-import com.hex.evegate.ui.mvp.model.Song
 import com.hex.evegate.ui.adapter.ItemsRVAdapter
+import com.hex.evegate.ui.mvp.model.Song
 import com.hex.evegate.ui.mvp.presenter.HistoryPresenter
 import com.hex.evegate.ui.mvp.view.HistoryView
+
 
 class HistoryActivity : MvpAppCompatActivity(), HistoryView {
 
@@ -29,7 +30,7 @@ class HistoryActivity : MvpAppCompatActivity(), HistoryView {
         configViews()
     }
 
-    private fun configViews() {
+    override fun configViews() {
         setContentView(R.layout.history_activity)
 
         coordinator = findViewById(R.id.content)

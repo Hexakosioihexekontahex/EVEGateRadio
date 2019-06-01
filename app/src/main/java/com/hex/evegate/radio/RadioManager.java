@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
+import com.hex.evegate.AppEx;
+
 import org.greenrobot.eventbus.EventBus;
 
 public class RadioManager {
@@ -23,9 +25,9 @@ public class RadioManager {
         serviceBound = false;
     }
 
-    public static RadioManager with(Context context) {
+    public static RadioManager getInstance() {
         if (instance == null)
-            instance = new RadioManager(context);
+            instance = new RadioManager(AppEx.getInstance());
         return instance;
     }
 

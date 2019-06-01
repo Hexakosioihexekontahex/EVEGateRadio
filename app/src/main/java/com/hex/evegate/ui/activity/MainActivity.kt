@@ -49,7 +49,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
         initialize()
     }
 
-    private fun initialize() {
+    override fun initialize() {
         setContentView(R.layout.activity_main)
 
         tvCount = findViewById(R.id.tvCount)
@@ -146,7 +146,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
     }
 
     @Subscribe
-    fun onEvent(status: String) {
+    override fun onEvent(status: String) {
         if (status == PlaybackStatus.PLAYING) {
             startVisualizer()
             ibPlayPause.setImageResource(android.R.drawable.ic_media_pause)

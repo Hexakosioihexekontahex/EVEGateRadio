@@ -23,7 +23,7 @@ class MainPresenter : MvpPresenter<MainView>() {
     private var freshNowPlaying: NowPlaying? = null
     private var freshness: Long? = null
 
-    private val radioManager = RadioManager.with(AppEx.instance)
+    private val radioManager = RadioManager.getInstance()
     private lateinit var streamURL: String
 
     private val showProgress =
@@ -60,23 +60,30 @@ class MainPresenter : MvpPresenter<MainView>() {
 
     private suspend fun getNowPlayingDto() {
         job = CoroutineScope(Dispatchers.IO).launch {
-            val response = stationApi?.nowPlaying()?.await()
-            if (response?.isSuccessful == true) {
-                withContext(Dispatchers.Main) {
-                    response.body()?.let { nowPlayingDto ->
-                        freshNowPlaying = nowPlayingDto.now_playing
-                        freshness = System.currentTimeMillis() / 1000
-                        viewState.setCount(nowPlayingDto.listeners.total)
-                        viewState.setSongName(nowPlayingDto.now_playing.song.text)
-                        viewState.setPlayList(nowPlayingDto.now_playing.playlist)
-                        viewState.showLive(nowPlayingDto.live.is_live == "true")
-                        viewState.showArt(nowPlayingDto.now_playing.song.art)
-                        viewState.showProgress(calculateProgressPercent(nowPlayingDto.now_playing))
+            freshness = System.currentTimeMillis() / 1000
+            try {
+                val response = stationApi?.nowPlaying()?.await()
+                if (response?.isSuccessful == true) {
+                    withContext(Dispatchers.Main) {
+                        response.body()?.let { nowPlayingDto ->
+                            freshNowPlaying = nowPlayingDto.now_playing
+                            viewState.setCount(nowPlayingDto.listeners.total)
+                            viewState.setSongName(nowPlayingDto.now_playing.song.text)
+                            viewState.setPlayList(nowPlayingDto.now_playing.playlist)
+                            viewState.showLive(nowPlayingDto.live.is_live == "true")
+                            viewState.showArt(nowPlayingDto.now_playing.song.art)
+                            viewState.showProgress(calculateProgressPercent(nowPlayingDto.now_playing))
+                        }
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        viewState.showMessage("Ошибка! ${response?.errorBody() ?: "Сервер не отвечает"}")
                     }
                 }
-            } else {
+            } catch (e: Throwable) {
+                freshness = System.currentTimeMillis() / 1000
                 withContext(Dispatchers.Main) {
-                    viewState.showMessage("Ашипко!")
+                    viewState.showMessage("Ошибка! ${e.message ?: "Проверьте интернет соединение"}")
                 }
             }
         }
@@ -84,16 +91,19 @@ class MainPresenter : MvpPresenter<MainView>() {
     }
 
     private fun refreshNowPlaying() {
-        if (freshNowPlaying == null || freshness == null) {
+        if (freshNowPlaying == null && freshness == null) {
             CoroutineScope(Dispatchers.IO).launch {
                 getNowPlayingDto()
             }
         } else {
             try {
+                if (freshness == null) {
+                    freshness = System.currentTimeMillis() / 1000
+                }
                 freshness?.let {
-                    if (freshNowPlaying!!.played_at.toLong() + freshNowPlaying!!.duration.toLong()
-                            < System.currentTimeMillis() / 1000 ||
-                            it + 10 < System.currentTimeMillis() / 1000) {
+                    val now = System.currentTimeMillis() / 1000
+                    if ((freshNowPlaying?.played_at?.toLong() ?: now) + (freshNowPlaying?.duration?.toLong() ?: 10L) < now ||
+                            it + 10 < now) {
                         CoroutineScope(Dispatchers.IO).launch {
                             getNowPlayingDto()
                         }
