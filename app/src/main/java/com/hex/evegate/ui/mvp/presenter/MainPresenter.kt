@@ -8,20 +8,15 @@ import com.hex.evegate.api.StationApi
 import com.hex.evegate.net.RetrofitClient
 import com.hex.evegate.radio.RadioManager
 import com.hex.evegate.ui.mvp.model.NowPlaying
-import com.hex.evegate.ui.mvp.model.NowPlayingDto
 import com.hex.evegate.ui.mvp.view.MainView
 import com.hex.evegate.util.calculateProgressPercent
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
-import retrofit2.Response
 import retrofit2.Retrofit
 
 @InjectViewState
 class MainPresenter : MvpPresenter<MainView>() {
 
-    private var compositeDisposable: CompositeDisposable? = null
+    private var job: Job? = null
     private var retrofit: Retrofit? = null
     private var stationApi: StationApi? = null
 
@@ -49,66 +44,61 @@ class MainPresenter : MvpPresenter<MainView>() {
             AppEx.instance!!.resources.getString(R.string.evegateradio_low)
         }
         radioManager.bind()
-        getNowPlayingDto()
+        CoroutineScope(Dispatchers.IO).launch {
+            getNowPlayingDto()
+        }
     }
 
     fun configNet() {
-        compositeDisposable = CompositeDisposable()
         retrofit = RetrofitClient.getInstance()
         stationApi = retrofit!!.create(StationApi::class.java)
     }
 
     private fun unConfigNet() {
-        compositeDisposable?.clear()
+        job?.cancelChildren()
     }
 
-    private fun getNowPlayingDto() {
-        freshness = System.currentTimeMillis() / 1000
-        compositeDisposable!!.add(stationApi!!.nowPlaying()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleNowPlayingResponse, this::handleNowPlayingError)
-        )
-    }
-
-    private fun handleNowPlayingResponse(result: Response<NowPlayingDto>) {
-        if (result.isSuccessful) {
-            if (result.body() != null) {
-                freshNowPlaying = result.body()!!.now_playing
-                viewState.setCount(result.body()!!.listeners.total)
-                viewState.setSongName(result.body()!!.now_playing.song.text)
-                viewState.setPlayList(result.body()!!.now_playing.playlist)
-                viewState.showLive(result.body()!!.live.is_live == "true")
-                viewState.showArt(result.body()!!.now_playing.song.art)
-                viewState.showProgress(calculateProgressPercent(result.body()!!.now_playing))
+    private suspend fun getNowPlayingDto() {
+        job = CoroutineScope(Dispatchers.IO).launch {
+            val response = stationApi?.nowPlaying()?.await()
+            if (response?.isSuccessful == true) {
+                withContext(Dispatchers.Main) {
+                    response.body()?.let { nowPlayingDto ->
+                        freshNowPlaying = nowPlayingDto.now_playing
+                        freshness = System.currentTimeMillis() / 1000
+                        viewState.setCount(nowPlayingDto.listeners.total)
+                        viewState.setSongName(nowPlayingDto.now_playing.song.text)
+                        viewState.setPlayList(nowPlayingDto.now_playing.playlist)
+                        viewState.showLive(nowPlayingDto.live.is_live == "true")
+                        viewState.showArt(nowPlayingDto.now_playing.song.art)
+                        viewState.showProgress(calculateProgressPercent(nowPlayingDto.now_playing))
+                    }
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    viewState.showMessage("Ашипко!")
+                }
             }
-        } else {
-            viewState.showMessage("Ашипко!")
         }
-    }
-
-    private fun handleNowPlayingError(error: Throwable) {
-        viewState.showMessage("Ашипко! ${error.message}")
+        job?.start()
     }
 
     private fun refreshNowPlaying() {
-        val now = System.currentTimeMillis() / 1000
-        freshness = now
-        if (freshNowPlaying == null) {
-            compositeDisposable!!.add(stationApi!!.nowPlaying()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        if (it.isSuccessful && it.body() != null) {
-                            freshNowPlaying = it.body()!!.now_playing
-                        }
-                    }) { viewState.showMessage("Ашипко! ${it.message}") }
-            )
+        if (freshNowPlaying == null || freshness == null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                getNowPlayingDto()
+            }
         } else {
             try {
-                if (freshNowPlaying!!.played_at.toLong() + freshNowPlaying!!.duration.toLong() < now &&
-                        freshness?.plus(10/*sec*/) ?: 0L < now)
-                    getNowPlayingDto()
+                freshness?.let {
+                    if (freshNowPlaying!!.played_at.toLong() + freshNowPlaying!!.duration.toLong()
+                            < System.currentTimeMillis() / 1000 ||
+                            it + 10 < System.currentTimeMillis() / 1000) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            getNowPlayingDto()
+                        }
+                    }
+                }
             } catch (e: NumberFormatException) {}
         }
     }
@@ -136,12 +126,15 @@ class MainPresenter : MvpPresenter<MainView>() {
 
     override fun attachView(view: MainView?) {
         super.attachView(view)
-        getNowPlayingDto()
+        CoroutineScope(Dispatchers.IO).launch {
+            getNowPlayingDto()
+        }
         showProgress.start()
     }
 
     override fun detachView(view: MainView?) {
         super.detachView(view)
+        job?.cancelChildren()
         showProgress.cancelChildren()
     }
 }

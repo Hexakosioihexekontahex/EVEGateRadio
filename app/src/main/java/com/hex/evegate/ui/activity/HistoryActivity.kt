@@ -15,6 +15,7 @@ import com.hex.evegate.ui.mvp.presenter.HistoryPresenter
 import com.hex.evegate.ui.mvp.view.HistoryView
 
 class HistoryActivity : MvpAppCompatActivity(), HistoryView {
+
     @InjectPresenter
     lateinit var historyPresenter: HistoryPresenter
 
@@ -39,7 +40,7 @@ class HistoryActivity : MvpAppCompatActivity(), HistoryView {
         rvSongs.layoutManager = LinearLayoutManager(this@HistoryActivity)
     }
 
-    override fun showHistory(songList: List<Song>) {
+    override fun showHistory(songList: List<Song>?) {
         val adapter = ItemsRVAdapter(this@HistoryActivity)
         adapter.setData(songList)
         rvSongs.adapter = adapter

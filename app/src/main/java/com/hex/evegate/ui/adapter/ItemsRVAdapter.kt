@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.hex.evegate.R
 import com.hex.evegate.ui.mvp.model.Song
 
@@ -56,6 +57,8 @@ class ItemsRVAdapter(private val ctx: Context) : RecyclerView.Adapter<ItemsRVAda
         holder.tvPlaylist.text = song.lyrics
         Glide.with(ctx)
                 .load(song.art)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .into(holder.ivSongAlbum)
     }
 

@@ -34,7 +34,8 @@ public class RadioManager {
     }
 
     public void playOrPause(String streamUrl){
-        service.playOrPause(streamUrl);
+        if (service != null)
+            service.playOrPause(streamUrl);
     }
 
     public boolean isPlaying() {
