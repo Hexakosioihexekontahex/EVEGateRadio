@@ -34,13 +34,6 @@ class PlayPauseWidget : AppWidgetProvider() {
         super.onRestored(context, oldWidgetIds, newWidgetIds)
     }
 
-    override fun onDisabled(context: Context?) {
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this)
-        }
-        super.onDisabled(context)
-    }
-
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this)

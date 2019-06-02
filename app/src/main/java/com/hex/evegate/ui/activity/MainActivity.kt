@@ -92,13 +92,14 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
         if (mainPresenter.isPlaying()) {
             bvVisualizer?.visualizer?.release()
             volumeControlStream = AudioManager.STREAM_MUSIC
-            val id = RadioManager.getService().exoPlayer.audioSessionId
-
-            bvVisualizer = findViewById<BarVisualizer>(R.id.bvVisualizer).apply {
-                setColor(ContextCompat.getColor(this@MainActivity, R.color.barVisualizer))
-                setDensity(70F)
-                setPlayer(id)
-                visibility = View.VISIBLE
+            val id = RadioManager.service?.exoPlayer?.audioSessionId
+            if (id != null) {
+                bvVisualizer = findViewById<BarVisualizer>(R.id.bvVisualizer).apply {
+                    setColor(ContextCompat.getColor(this@MainActivity, R.color.barVisualizer))
+                    setDensity(70F)
+                    setPlayer(id)
+                    visibility = View.VISIBLE
+                }
             }
         }
     }
