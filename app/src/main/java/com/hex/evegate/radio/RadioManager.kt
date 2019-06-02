@@ -48,6 +48,8 @@ class RadioManager private constructor(private val context: Context) {
         context.unbindService(serviceConnection)
     }
 
+    fun getService() = service
+
     companion object {
 
         @SuppressLint("StaticFieldLeak")

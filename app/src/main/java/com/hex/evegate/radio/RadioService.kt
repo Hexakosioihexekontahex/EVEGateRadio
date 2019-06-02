@@ -282,6 +282,12 @@ class RadioService : Service(), Player.EventListener, AudioManager.OnAudioFocusC
         }
     }
 
+    fun onTrackUpdated(song: String, artist: String) {
+        status?.let {
+            notificationManager?.onTrackUpdated(song, artist, it)
+        }
+    }
+
     companion object {
         const val ACTION_PLAY = "com.hex.evegate.radio.ACTION_PLAY"
         const val ACTION_PAUSE = "com.hex.evegate.radio.ACTION_PAUSE"

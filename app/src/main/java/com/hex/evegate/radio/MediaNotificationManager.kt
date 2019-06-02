@@ -9,10 +9,8 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.os.Build
-
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-
 import com.hex.evegate.R
 import com.hex.evegate.ui.activity.MainActivity
 
@@ -20,8 +18,8 @@ import com.hex.evegate.ui.activity.MainActivity
 class MediaNotificationManager(private val service: RadioService) {
     private val PRIMARY_CHANNEL = "PRIMARY_CHANNEL_ID"
     private val PRIMARY_CHANNEL_NAME = "PRIMARY"
-    private val strAppName: String
-    private val strLiveBroadcast: String
+    private var strAppName: String
+    private var strLiveBroadcast: String
     private val resources: Resources
     private val notificationManager: NotificationManagerCompat
 
@@ -65,8 +63,6 @@ class MediaNotificationManager(private val service: RadioService) {
 
         val builder = NotificationCompat.Builder(service, PRIMARY_CHANNEL)
                 .setAutoCancel(false)
-                .setContentTitle(strLiveBroadcast)
-                .setContentText(strAppName)
                 .setLargeIcon(largeIcon)
                 .setContentIntent(pendingIntent)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -80,12 +76,30 @@ class MediaNotificationManager(private val service: RadioService) {
                         .setShowCancelButton(true)
                         .setCancelButtonIntent(stopAction)
                 )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            builder.setContentTitle("$strAppName - $strLiveBroadcast")
+        } else {
+            builder.setContentTitle(strLiveBroadcast)
+                    .setContentText(strAppName)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setCategory(NotificationCompat.CATEGORY_STATUS)
+                    .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+                    .priority = NotificationCompat.PRIORITY_MIN
+        }
 
         service.startForeground(NOTIFICATION_ID, builder.build())
     }
 
     fun cancelNotify() {
         service.stopForeground(true)
+    }
+
+    fun onTrackUpdated(song: String, artist: String, playbackStatus: String) {
+        strLiveBroadcast = song
+        strAppName = artist
+        startNotify(playbackStatus)
     }
 
     companion object {

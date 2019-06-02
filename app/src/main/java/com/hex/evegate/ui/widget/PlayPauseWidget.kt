@@ -47,6 +47,9 @@ class PlayPauseWidget : AppWidgetProvider() {
 
         if (context != null && appWidgetManager != null) {
             ctx = context
+            if (!EventBus.getDefault().isRegistered(this)) {
+                EventBus.getDefault().register(this)
+            }
             val widget = ComponentName(context, PlayPauseWidget::class.java)
             val allWidgetIds = appWidgetManager.getAppWidgetIds(widget)
             for (id in allWidgetIds) {
@@ -78,6 +81,9 @@ class PlayPauseWidget : AppWidgetProvider() {
         Log.d("PlayPauseWidget", "action ${intent?.action}")
         if (context != null) {
             ctx = context
+            if (!EventBus.getDefault().isRegistered(this)) {
+                EventBus.getDefault().register(this)
+            }
             streamURL = if (AppEx.instance!!.shpHQ) {
                 AppEx.instance!!.resources.getString(R.string.evegateradio_high)
             } else {
@@ -85,7 +91,8 @@ class PlayPauseWidget : AppWidgetProvider() {
             }
         }
         if (clickListener == intent?.action) {
-            RadioManager.getInstance().playOrPause(streamURL ?: AppEx.instance!!.resources.getString(R.string.evegateradio_high))
+            RadioManager.getInstance().playOrPause(streamURL ?:
+            AppEx.instance!!.resources.getString(R.string.evegateradio_high))
         }
     }
 

@@ -73,6 +73,10 @@ class MainPresenter : MvpPresenter<MainView>() {
                             viewState.showLive(nowPlayingDto.live.is_live == "true")
                             viewState.showArt(nowPlayingDto.now_playing.song.art)
                             viewState.showProgress(calculateProgressPercent(nowPlayingDto.now_playing))
+                            if (radioManager.isPlaying) {
+                                radioManager.getService()?.onTrackUpdated(nowPlayingDto.now_playing.song.title,
+                                        nowPlayingDto.now_playing.song.artist)
+                            }
                         }
                     }
                 } else {
