@@ -99,28 +99,28 @@ class PlayPauseWidget : AppWidgetProvider() {
 
     @Subscribe
     fun onEvent(status: String) {
-        val remoteViews = RemoteViews(ctx?.packageName, R.layout.widget)
-        when (status) {
-            PlaybackStatus.LOADING -> {
-                remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource",
-                        R.drawable.ic_file_download_white_24dp)
-            }
-            PlaybackStatus.PLAYING -> {
-                remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource",
-                        android.R.drawable.ic_media_pause)
-            }
-            PlaybackStatus.ERROR -> {
-                remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource",
-                        android.R.drawable.ic_dialog_alert)
-            }
-
-            else -> remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource", android.R.drawable.ic_media_play)
-        }
         ctx?.let {
             val appWidgetManager = AppWidgetManager.getInstance(ctx)
             val widget = ComponentName(ctx!!, PlayPauseWidget::class.java)
             val allWidgetIds = appWidgetManager.getAppWidgetIds(widget)
             for (id in allWidgetIds) {
+                val remoteViews = RemoteViews(ctx?.packageName, R.layout.widget)
+                when (status) {
+                    PlaybackStatus.LOADING -> {
+                        remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource",
+                                R.drawable.ic_file_download_white_24dp)
+                    }
+                    PlaybackStatus.PLAYING -> {
+                        remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource",
+                                android.R.drawable.ic_media_pause)
+                    }
+                    PlaybackStatus.ERROR -> {
+                        remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource",
+                                android.R.drawable.ic_dialog_alert)
+                    }
+
+                    else -> remoteViews.setInt(R.id.widget_ivPlayPause, "setImageResource", android.R.drawable.ic_media_play)
+                }
                 appWidgetManager.updateAppWidget(id, remoteViews)
             }
         }
