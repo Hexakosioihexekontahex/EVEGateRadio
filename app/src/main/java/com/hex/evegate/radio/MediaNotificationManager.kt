@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
@@ -22,6 +23,7 @@ class MediaNotificationManager(private val service: RadioService) {
     private var strLiveBroadcast: String
     private val resources: Resources
     private val notificationManager: NotificationManagerCompat
+    private var largeIc: Bitmap? = null
 
     init {
         this.resources = service.resources
@@ -31,7 +33,7 @@ class MediaNotificationManager(private val service: RadioService) {
     }
 
     fun startNotify(playbackStatus: String) {
-        val largeIcon = BitmapFactory.decodeResource(resources, R.drawable.evegate_large)
+        val largeIcon = largeIc ?: BitmapFactory.decodeResource(resources, R.drawable.evegate_large)
         var icon = R.drawable.ic_pause_white
         val playbackAction = Intent(service, RadioService::class.java)
         playbackAction.action = RadioService.ACTION_PAUSE
@@ -99,6 +101,11 @@ class MediaNotificationManager(private val service: RadioService) {
     fun onTrackUpdated(song: String, artist: String, playbackStatus: String) {
         strLiveBroadcast = song
         strAppName = artist
+        startNotify(playbackStatus)
+    }
+
+    fun onIconsLoaded(icon: Bitmap, playbackStatus: String) {
+        largeIc = icon
         startNotify(playbackStatus)
     }
 

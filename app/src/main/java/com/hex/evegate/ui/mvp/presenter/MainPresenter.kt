@@ -1,17 +1,24 @@
 package com.hex.evegate.ui.mvp.presenter
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.hex.evegate.AppEx
 import com.hex.evegate.R
 import com.hex.evegate.api.StationApi
 import com.hex.evegate.net.RetrofitClient
 import com.hex.evegate.radio.RadioManager
 import com.hex.evegate.ui.mvp.model.NowPlaying
+import com.hex.evegate.ui.mvp.model.NowPlayingDto
 import com.hex.evegate.ui.mvp.view.MainView
 import com.hex.evegate.util.calculateProgressPercent
 import kotlinx.coroutines.*
 import retrofit2.Retrofit
+import com.bumptech.glide.request.target.CustomTarget
+
 
 @InjectViewState
 class MainPresenter : MvpPresenter<MainView>() {
@@ -73,10 +80,7 @@ class MainPresenter : MvpPresenter<MainView>() {
                             viewState.showLive(nowPlayingDto.live.is_live == "true")
                             viewState.showArt(nowPlayingDto.now_playing.song.art)
                             viewState.showProgress(calculateProgressPercent(nowPlayingDto.now_playing))
-                            if (radioManager.isPlaying) {
-                                radioManager.getService()?.onTrackUpdated(nowPlayingDto.now_playing.song.title,
-                                        nowPlayingDto.now_playing.song.artist)
-                            }
+                            if (radioManager.isPlaying) { setNotificationData(nowPlayingDto) }
                         }
                     }
                 } else {
@@ -92,6 +96,25 @@ class MainPresenter : MvpPresenter<MainView>() {
             }
         }
         job?.start()
+    }
+
+    private fun setNotificationData(nowPlayingDto: NowPlayingDto) {
+        radioManager.getService()?.onTrackUpdated(nowPlayingDto.now_playing.song.title,
+                nowPlayingDto.now_playing.song.artist)
+        val largeIconSize = Math.round(64 * AppEx.instance!!.resources.displayMetrics.density)
+        Glide.with(AppEx.instance!!)
+                .asBitmap()
+                .load(nowPlayingDto.now_playing.song.art)
+                .override(largeIconSize, largeIconSize)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(object: CustomTarget<Bitmap>() {
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                    override fun onResourceReady(resource: Bitmap,
+                         transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
+                        radioManager.getService()?.onIconLoaded(resource)
+                    }
+                })
     }
 
     private fun refreshNowPlaying() {

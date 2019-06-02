@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
 import android.media.AudioManager
 import android.media.MediaMetadata
 import android.net.Uri
@@ -19,7 +20,6 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import android.text.TextUtils
-import android.util.Log
 
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -39,7 +39,6 @@ import com.google.android.exoplayer2.util.Util
 import com.hex.evegate.R
 
 import org.greenrobot.eventbus.EventBus
-import java.util.*
 
 class RadioService : Service(), Player.EventListener, AudioManager.OnAudioFocusChangeListener {
     private val iBinder = LocalBinder()
@@ -285,6 +284,12 @@ class RadioService : Service(), Player.EventListener, AudioManager.OnAudioFocusC
     fun onTrackUpdated(song: String, artist: String) {
         status?.let {
             notificationManager?.onTrackUpdated(song, artist, it)
+        }
+    }
+
+    fun onIconLoaded(icon: Bitmap) {
+        status?.let {
+            notificationManager?.onIconsLoaded(icon, it)
         }
     }
 
