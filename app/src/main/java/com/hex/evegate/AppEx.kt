@@ -2,7 +2,6 @@ package com.hex.evegate
 
 import android.app.Application
 import android.content.Context
-import com.hex.evegate.radio.RadioManager
 
 class AppEx : Application() {
 
@@ -11,35 +10,10 @@ class AppEx : Application() {
         var instance: AppEx? = null
     }
 
-//    public var radioManager: RadioManager? = null
-
     override fun onCreate() {
         super.onCreate()
         instance = this
-
-//        radioManager = RadioManager.with(instance)
-//        radioManager?.bind()
-
-//        TrafficCop.Builder()
-//                // Set a threshold for downloads
-//                .downloadWarningThreshold(Threshold.of(100, SizeUnit.KILOBYTES).per(1, TimeUnit.SECOND))
-//                // Set a threshold for uploads
-//                .uploadWarningThreshold(Threshold.of(100, SizeUnit.KILOBYTES).per(1, TimeUnit.SECOND))
-//                // Register callbacks to be alerted when the threshold is reached
-//                .alert(LogDataUsageAlertListener(), object : LogDataUsageAlertListener() {
-//                    override fun alertThreshold(threshold: Threshold, dataUsage: DataUsage) {
-//                        // Alert somehow!
-//                        Toast.makeText(this@AppEx, dataUsage.humanReadableSize, Toast.LENGTH_SHORT).show()
-//                    }
-//                })
-//                // Pass a string that uniquely identifies this instance.
-//                .register("myTrafficCop", this).startMeasuring()
     }
-
-//    override fun onTerminate() {
-//        super.onTerminate()
-//        radioManager?.unbind()
-//    }
 
     var shpHQ: Boolean
         get() {
@@ -52,6 +26,4 @@ class AppEx : Application() {
             ed?.putBoolean("HighQuality", value)
             ed?.apply()
         }
-
-
 }

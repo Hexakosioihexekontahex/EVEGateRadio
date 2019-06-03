@@ -29,7 +29,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
 
     private lateinit var tvCount: TextView
     private lateinit var tvSongName: TextView
-    private lateinit var tvPlaylist: TextView
     private lateinit var ivBackground: ImageView
     private lateinit var chbHQ: CheckBox
     private lateinit var ibPlayPause: ImageButton
@@ -54,7 +53,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
 
         tvCount = findViewById(R.id.tvCount)
         tvSongName = findViewById(R.id.tvSongName)
-        tvPlaylist = findViewById(R.id.tvPlaylist)
         ivBackground = findViewById(R.id.ivBackground)
         dlDrawer = findViewById(R.id.dlDrawer)
         nvMenu = findViewById(R.id.nvMenu)
@@ -197,7 +195,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
                 if (isLive) { ImageView.VISIBLE } else { ImageView.GONE }
     }
 
-    override fun setPlayList(playlist: String) { tvPlaylist.text = playlist }
     override fun setSongName(songName: String) { tvSongName.text = songName }
     override fun setCount(count: String) { tvCount.text = count }
 }

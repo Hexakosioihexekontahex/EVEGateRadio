@@ -5,19 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 
-class BarVisualizer : BaseVisualizer {
+class BarVisualizer @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : BaseVisualizer(context, attrs, defStyleAttr) {
 
     private var density = 50f
     private var gap: Int = 0
-
-    constructor(context: Context) : super(context)
-
-    constructor(context: Context,
-                attrs: AttributeSet?) : super(context, attrs)
-
-    constructor(context: Context,
-                attrs: AttributeSet?,
-                defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun init() {
         this.density = 50f

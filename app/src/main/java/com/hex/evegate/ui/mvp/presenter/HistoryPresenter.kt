@@ -31,7 +31,7 @@ class HistoryPresenter : MvpPresenter<HistoryView>() {
                         var history: List<Song>? = null
                         response.body()?.let { nowPlayingDto -> run {
                             history = nowPlayingDto.song_history.map { songHistory ->
-                                    songHistory.song.apply { lyrics = songHistory.playlist }
+                                    songHistory.song
                                 }
                             }
                             viewState.showHistory(history)

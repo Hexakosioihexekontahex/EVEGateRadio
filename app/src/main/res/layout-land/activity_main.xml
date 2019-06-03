@@ -96,15 +96,6 @@
                     android:textStyle="bold"
                     android:textColor="@color/white"/>
             </LinearLayout>
-            <TextView
-                android:id="@+id/tvPlaylist"
-                android:text="@string/playlistname"
-                android:textStyle="italic"
-                android:textSize="18sp"
-                android:textColor="@color/gray"
-                android:gravity="start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout

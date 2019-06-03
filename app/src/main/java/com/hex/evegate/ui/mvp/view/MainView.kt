@@ -12,7 +12,6 @@ interface MainView : MvpView {
     fun showProgress(percent: Float)
     fun setCount(count: String)
     fun setSongName(songName: String)
-    fun setPlayList(playlist: String)
     fun showLive(isLive: Boolean)
     fun showArt(artUrl: String)
     fun startVisualizer()

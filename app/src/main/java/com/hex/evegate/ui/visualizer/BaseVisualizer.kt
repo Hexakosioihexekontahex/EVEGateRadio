@@ -8,24 +8,16 @@ import android.media.audiofx.Visualizer
 import android.util.AttributeSet
 import android.view.View
 
-abstract class BaseVisualizer : View {
+abstract class BaseVisualizer @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
     protected var bytes: ByteArray? = null
     protected lateinit var paint: Paint
     var visualizer: Visualizer? = null
         protected set
     private var color = Color.BLUE
 
-    constructor(context: Context) : super(context) {
-        init(null)
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(attrs)
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    init {
         init(attrs)
         init()
     }

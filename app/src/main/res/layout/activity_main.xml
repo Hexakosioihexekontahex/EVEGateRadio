@@ -86,15 +86,6 @@
                     android:textStyle="bold"
                     android:textColor="@color/white"/>
             </LinearLayout>
-            <TextView
-                android:id="@+id/tvPlaylist"
-                android:text="@string/playlistname"
-                android:textStyle="italic"
-                android:textSize="18sp"
-                android:textColor="@color/gray"
-                android:gravity="end"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
