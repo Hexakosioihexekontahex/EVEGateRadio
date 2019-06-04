@@ -1,10 +1,10 @@
 package com.hex.evegate.radio
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.graphics.Bitmap
 import android.media.AudioManager
 import android.media.MediaMetadata
@@ -13,20 +13,16 @@ import android.net.wifi.WifiManager
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-
+import android.os.PowerManager
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import android.text.TextUtils
-
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.PlaybackParameters
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.Timeline
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
@@ -36,11 +32,14 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.hex.evegate.AppEx
 import com.hex.evegate.R
-
 import org.greenrobot.eventbus.EventBus
 
 class RadioService : Service(), Player.EventListener, AudioManager.OnAudioFocusChangeListener {
+//    private val PRIMARY_CHANNEL = "PRIMARY_CHANNEL_ID_RADIO"
+//    private val PRIMARY_CHANNEL_NAME = "PRIMARY_RADIO"
+
     private val iBinder = LocalBinder()
     private val BANDWIDTH_METER = DefaultBandwidthMeter()
     lateinit var exoPlayer: SimpleExoPlayer
@@ -57,6 +56,7 @@ class RadioService : Service(), Player.EventListener, AudioManager.OnAudioFocusC
     private var strAppName: String? = null
     private var strLiveBroadcast: String? = null
     private var streamUrl: String? = null
+    private var wakeLock: PowerManager.WakeLock? = null
 
     private val becomingNoisyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -140,25 +140,33 @@ class RadioService : Service(), Player.EventListener, AudioManager.OnAudioFocusC
         exoPlayer.addListener(this)
         registerReceiver(becomingNoisyReceiver, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
         status = PlaybackStatus.IDLE
+
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Tag:Tag")
+        wakeLock?.setReferenceCounted(false)
+        if (wakeLock?.isHeld == false)
+            wakeLock?.acquire(24*60*60*1000L /*24 hours*/)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(Intent(applicationContext, RadioService::class.java))
+        }
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val action = intent.action
         if (TextUtils.isEmpty(action))
-            return Service.START_NOT_STICKY
+            return START_NOT_STICKY
         val result = audioManager!!.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
         if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             stop()
-            return Service.START_NOT_STICKY
+            return START_NOT_STICKY
         }
-        if (action!!.equals(ACTION_PLAY, ignoreCase = true)) {
-            resume()
-        } else if (action.equals(ACTION_PAUSE, ignoreCase = true)) {
-            pause()
-        } else if (action.equals(ACTION_STOP, ignoreCase = true)) {
-            stop()
+        when {
+            action?.equals(ACTION_PLAY, ignoreCase = true) == true -> resume()
+            action?.equals(ACTION_PAUSE, ignoreCase = true) == true -> pause()
+            action?.equals(ACTION_STOP, ignoreCase = true) == true -> stop()
         }
-        return Service.START_NOT_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onUnbind(intent: Intent): Boolean {
@@ -179,6 +187,10 @@ class RadioService : Service(), Player.EventListener, AudioManager.OnAudioFocusC
             mediaSession!!.release()
         }
         unregisterReceiver(becomingNoisyReceiver)
+
+        if (wakeLock?.isHeld == true)
+            wakeLock?.release()
+
         super.onDestroy()
     }
 

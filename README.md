@@ -1,5 +1,7 @@
 # EVEGateRadio
-Radio player streaming evegateradio.ru
+Radio player streaming [EVEGateRadio](https://evegateradio.ru/)
+
+[Available on Google Play](https://play.google.com/store/apps/details?id=com.hex.evegate)
 
 # Preview
 <img src="https://raw.githubusercontent.com/Hexakosioihexekontahex/radio-player/master/screenshot/progress.gif" width="220"/>
