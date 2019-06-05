@@ -1,10 +1,10 @@
 package com.hex.evegate.radio
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.media.AudioManager
 import android.media.MediaMetadata
@@ -20,8 +20,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import android.text.TextUtils
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
+import android.util.Log
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -32,14 +31,10 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import com.hex.evegate.AppEx
 import com.hex.evegate.R
 import org.greenrobot.eventbus.EventBus
 
 class RadioService : Service(), Player.EventListener, AudioManager.OnAudioFocusChangeListener {
-//    private val PRIMARY_CHANNEL = "PRIMARY_CHANNEL_ID_RADIO"
-//    private val PRIMARY_CHANNEL_NAME = "PRIMARY_RADIO"
-
     private val iBinder = LocalBinder()
     private val BANDWIDTH_METER = DefaultBandwidthMeter()
     lateinit var exoPlayer: SimpleExoPlayer
@@ -146,10 +141,6 @@ class RadioService : Service(), Player.EventListener, AudioManager.OnAudioFocusC
         wakeLock?.setReferenceCounted(false)
         if (wakeLock?.isHeld == false)
             wakeLock?.acquire(24*60*60*1000L /*24 hours*/)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(Intent(applicationContext, RadioService::class.java))
-        }
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {

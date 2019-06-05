@@ -1,7 +1,11 @@
 package com.hex.evegate.ui.mvp.presenter
 
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.bumptech.glide.Glide
@@ -34,11 +38,16 @@ class MainPresenter : MvpPresenter<MainView>() {
     private lateinit var streamURL: String
 
     private val showProgress =
-            GlobalScope.launch(context = Dispatchers.Main ) {
+            CoroutineScope(Dispatchers.IO).launch {
                 while (true) {
                     delay(1000)
                     refreshNowPlaying()
-                    freshNowPlaying?.let { viewState.showProgress(calculateProgressPercent(it))}
+                    freshNowPlaying?.let {
+                        val percent = calculateProgressPercent(it)
+                        withContext(Dispatchers.Main) {
+                            viewState.showProgress(percent)
+                        }
+                    }
                 }
             }
 
@@ -50,11 +59,54 @@ class MainPresenter : MvpPresenter<MainView>() {
         } else {
             AppEx.instance!!.resources.getString(R.string.evegateradio_low)
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            configPermissions()
+        }
         radioManager.bind()
         CoroutineScope(Dispatchers.IO).launch {
             getNowPlayingDto()
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun configPermissions() : Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val permissionsForCheckingList = mutableListOf(
+                    android.Manifest.permission.INTERNET,
+                    android.Manifest.permission.WAKE_LOCK,
+                    android.Manifest.permission.ACCESS_NETWORK_STATE,
+                    android.Manifest.permission.READ_PHONE_STATE,
+                    android.Manifest.permission.RECORD_AUDIO
+            )
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                permissionsForCheckingList.add(android.Manifest.permission.FOREGROUND_SERVICE)
+            }
+
+            if (permissionsForCheckingList.isNotEmpty()) {
+                val permissionsForChecking = permissionsForCheckingList.toTypedArray()
+
+                val permissionsForRequesting = mutableListOf<String>()
+
+                for (permission in permissionsForChecking) {
+                    if (AppEx.instance!!.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+                        Log.d("Permissions", "$permission PERMISSION_GRANTED")
+                    } else {
+                        Log.d("Permissions", "$permission PERMISSION_DENIED")
+                        permissionsForRequesting.add(permission)
+                    }
+                }
+                return if (permissionsForRequesting.isNotEmpty()) {
+                    viewState.requestPermissions(permissionsForRequesting.toTypedArray())
+                    false
+                } else {
+                    true
+                }
+            }
+        }
+        return true
+    }
+
 
     fun configNet() {
         retrofit = RetrofitClient.getInstance()
@@ -161,6 +213,23 @@ class MainPresenter : MvpPresenter<MainView>() {
     }
 
     fun isHQ() = AppEx.instance!!.shpHQ
+
+    fun onRequestPermissionsResult(permissions: Array<out String>, grantResults: IntArray) {
+        var anyDenied = false
+
+        for (i in 0 until permissions.size) {
+            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                anyDenied = true
+            }
+        }
+
+        if (anyDenied) {
+            viewState.showMessage("Без необходимых разрешений приложение может работать некорректно или не сможет работать вообще")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            }
+        }
+    }
 
     override fun attachView(view: MainView?) {
         super.attachView(view)

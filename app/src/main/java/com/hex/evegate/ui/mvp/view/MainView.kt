@@ -23,4 +23,7 @@ interface MainView : MvpView {
 
     @StateStrategyType(value = OneExecutionStateStrategy::class)
     fun showMessage(res: Int)
+
+    @StateStrategyType(value = OneExecutionStateStrategy::class)
+    fun requestPermissions(permissions: Array<String>)
 }

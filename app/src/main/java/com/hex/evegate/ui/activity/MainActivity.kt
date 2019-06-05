@@ -2,10 +2,12 @@ package com.hex.evegate.ui.activity
 
 import android.content.Intent
 import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -196,5 +198,18 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationView.OnNavigati
     }
 
     override fun setSongName(songName: String) { tvSongName.text = songName }
+
     override fun setCount(count: String) { tvCount.text = count }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun requestPermissions(permissions: Array<String>) {
+        requestPermissions(permissions, 1)
+    }
+
+    override fun onRequestPermissionsResult(
+            requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        mainPresenter.onRequestPermissionsResult(permissions, grantResults)
+    }
 }
