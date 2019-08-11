@@ -8,6 +8,7 @@ class AppEx : Application() {
     companion object {
         @JvmStatic
         var instance: AppEx? = null
+            private set
     }
 
     override fun onCreate() {

@@ -22,12 +22,12 @@ import com.hex.evegate.ui.mvp.view.MainView
 import com.hex.evegate.util.calculateProgressPercent
 import kotlinx.coroutines.*
 import retrofit2.Retrofit
+import kotlin.math.roundToInt
 
 
 @InjectViewState
-class MainPresenter : MvpPresenter<MainView>() {
+class MainPresenter : MvpPresenter<MainView>(), CoroutineScope by MainScope() {
 
-    private var job: Job? = null
     private var retrofit: Retrofit? = null
     private var stationApi: StationApi? = null
 
@@ -113,12 +113,8 @@ class MainPresenter : MvpPresenter<MainView>() {
         stationApi = retrofit!!.create(StationApi::class.java)
     }
 
-    private fun unConfigNet() {
-        job?.cancelChildren()
-    }
-
     private suspend fun getNowPlayingDto() {
-        job = CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.IO + errorHandler).launch {
             freshness = System.currentTimeMillis() / 1000
             try {
                 val response = stationApi?.nowPlaying()?.await()
@@ -146,13 +142,12 @@ class MainPresenter : MvpPresenter<MainView>() {
                 }
             }
         }
-        job?.start()
     }
 
     private fun setNotificationData(nowPlayingDto: NowPlayingDto) {
         radioManager.getService()?.onTrackUpdated(nowPlayingDto.now_playing.song.title,
                 nowPlayingDto.now_playing.song.artist)
-        val largeIconSize = Math.round(64 * AppEx.instance!!.resources.displayMetrics.density)
+        val largeIconSize = (64 * AppEx.instance!!.resources.displayMetrics.density).roundToInt()
         try {
             Glide.with(AppEx.instance!!)
                     .asBitmap()
@@ -172,7 +167,7 @@ class MainPresenter : MvpPresenter<MainView>() {
 
     private fun refreshNowPlaying() {
         if (freshNowPlaying == null && freshness == null) {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO + errorHandler).launch {
                 getNowPlayingDto()
             }
         } else {
@@ -203,7 +198,8 @@ class MainPresenter : MvpPresenter<MainView>() {
         super.onDestroy()
 
         radioManager.unbind()
-        unConfigNet()
+
+        cancel()
     }
 
     fun onCheckBoxHqChanged(isChecked: Boolean) {
@@ -241,7 +237,10 @@ class MainPresenter : MvpPresenter<MainView>() {
 
     override fun detachView(view: MainView?) {
         super.detachView(view)
-        job?.cancelChildren()
         showProgress.cancelChildren()
+    }
+
+    private val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        Log.e(this@MainPresenter::class.java.canonicalName, "$coroutineContext ${throwable.message}")
     }
 }
