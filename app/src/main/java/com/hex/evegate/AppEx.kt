@@ -2,6 +2,8 @@ package com.hex.evegate
 
 import android.app.Application
 import android.content.Context
+import com.crashlytics.android.Crashlytics
+import io.fabric.sdk.android.Fabric
 
 class AppEx : Application() {
 
@@ -14,6 +16,7 @@ class AppEx : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        Fabric.with(this, Crashlytics())
     }
 
     var shpHQ: Boolean
